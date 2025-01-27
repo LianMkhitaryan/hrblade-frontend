@@ -1,0 +1,16 @@
+.ant-rate {
+  font-size: 10px;
+  color: #fda94c;
+
+  &.large {
+    font-size: 24px;
+  }
+
+  &.medium {
+    font-size: 18px;
+  }
+}
+
+.ant-rate-star:not(:last-child) {
+  margin-right: 2px;
+}

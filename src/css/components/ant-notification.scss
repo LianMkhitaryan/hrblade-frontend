@@ -1,0 +1,50 @@
+.ant-notification {
+  right: 50% !important;
+  margin-right: 0 !important;
+  transform: translateX(50%);
+}
+
+.ant-notification-notice {
+  border-radius: 10px;
+}
+
+.anticon.ant-notification-notice-icon-warning {
+  color: $orange;
+}
+
+// .ant-notification-notice-message,
+// .ant-notification-notice-close {
+//   color: #ffffff;
+// }
+
+// .ant-notification-notice-close {
+//   &:hover {
+//     color: #ffffff;
+//   }
+// }
+
+// .ant-notification-notice {
+//   background-color: #363151;
+//   color: #ffffff;
+// }
+
+.ant-notification-notice-icon {
+  .success-icon,
+  .error-icon,
+  .warning-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .success-icon {
+    fill: #07885b;
+  }
+
+  .warning-icon {
+    fill: #fda94c;
+  }
+
+  .error-icon {
+    fill: #dd2705;
+  }
+}

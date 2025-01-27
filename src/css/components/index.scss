@@ -1,0 +1,47 @@
+@import './ant-avatar.scss';
+@import './ant-breadcrumb.scss';
+@import './ant-calendar.scss';
+@import './ant-checkbox.scss';
+@import './ant-comment.scss';
+@import './ant-divider.scss';
+@import './ant-dropdown.scss';
+@import './ant-form.scss';
+@import './ant-input.scss';
+@import './ant-modal.scss';
+@import './ant-notification.scss';
+@import './ant-radio.scss';
+@import './ant-rate.scss';
+@import './ant-select.scss';
+@import './ant-spin.scss';
+@import './ant-steps.scss';
+@import './ant-switch.scss';
+
+body.rtl {
+  .competense-progress-title {
+    text-align: right;
+  }
+
+  .candidate-answers-content-header {
+    text-align: right;
+    justify-content: flex-end;
+  }
+
+  .set-score-button {
+    margin-left: auto;
+  }
+
+  .page-title {
+    text-align: right;
+  }
+
+  .upload-info {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .app-page-header {
+    .page-title {
+      text-align: left;
+    }
+  }
+}

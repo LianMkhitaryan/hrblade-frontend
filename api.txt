@@ -1,0 +1,108 @@
+Route::get('/config' //
+Route::post('/user/settings', //
+agency_name
+recruiting_owner
+name
+email
+avatar
+phone
+
+Route::get('/companies', //
+'name' => 'required|max:255',
+            'location' => 'required',
+            'website' => 'required|URL',
+            'logo' => 'sometimes|image',
+            'industry_id' => 'required|exists:industries,id'
+
+Route::post('/company/create', //
+Route::post('/company/update', //
+Route::get('/company/get/{id}' //
+    Route::post('/company/remove/{id}' //
+
+    Route::get('/job/get/{id}' //
+    Route::post('/job/remove/{id}' //
+
+Route::get('/jobs', //
+
+Route::post('/job/active //
+'active' => 'required|boolean',
+            'job_id' => 'required|exists:jobs,id'
+
+Route::post('/job/create', //
+'name' => 'required|max:255',
+            'location' => 'required',
+            'description' => 'required',
+            'salary' => 'required',
+            'company_id' => 'required|exists:companies,id',
+            'industry_id' => 'required|exists:industries,id',
+            'role_id' => 'required|exists:roles,id',
+            'for_follow_up' => 'required|boolean',
+            'expire_date' => 'sometimes|date',
+            'expire_days' => 'sometimes|numeric',
+            'start_at' => 'sometimes|date',
+            'video' => 'sometimes|URL'
+
+Route::post('/job/invite/create' //
+'name' => 'required|max:255',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'job_id' => 'required'
+
+Route::post('/job/update', //
+Route::get('/role/questions/{id}', //
+
+Route::get('/faqs', //
+Route::get('/plans'
+
+Route::post('/help', //
+
+Route::post('/invite/create', //
+Route::get('/users' //
+
+Route::get('/dashboard' //
+
+Route::post('/video/rate', //
+
+/interview/{hash} //
+
+Route::get('/interview/response/{hash} //
+это по приглашению
+
+Route::get('/response/get/{id} //
+
+Route::post('/video/rate //
+  'rate' => 'required',
+            'answer_id' => 'required'
+
+    Route::post('/response/add/note' //
+note' => 'required',
+            'response_id' => 'required'
+
+    Route::post('/response/add/rating' //
+'rating' => 'required|integer|between:0,5',
+            'response_id' => 'required'
+
+    Route::post('/response/add/comment', //
+ 'comment' => 'required',
+            'response_id' => 'required'
+
+Route::post('/response/change/status //
+
+           'status' => 'required',
+            'response_id' => 'required'
+
+'INVITED', 'REVIEW','ACCEPTED','REJECTED'
+
+post('/response/scores/add'
+response_id
+scores[] = {
+scores: 60
+}
+
+Route::get('/v2/plans
+    Route::post('/v2/plans/subscribe
+plan_id
+token
+    Route::post('/v2/plans/swap
+plan_id
+    Route::post('/v2/plans/cancel

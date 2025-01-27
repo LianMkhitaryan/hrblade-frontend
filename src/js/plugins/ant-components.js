@@ -1,0 +1,81 @@
+import Vue from 'vue';
+import {
+  ConfigProvider,
+  Row,
+  Col,
+  Menu,
+  Drawer,
+  Dropdown,
+  Popover,
+  Avatar,
+  Badge,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  AutoComplete,
+  Select,
+  Checkbox,
+  Radio,
+  Switch,
+  Upload,
+  Rate,
+  Space,
+  DatePicker,
+  Steps,
+  Button,
+  Collapse,
+  Comment,
+  Progress,
+  Breadcrumb,
+  Modal,
+  Spin,
+  Empty,
+  Tooltip,
+  Popconfirm,
+  Result,
+  Icon,
+  notification
+} from 'ant-design-vue';
+
+Vue.use(ConfigProvider);
+Vue.use(Row);
+Vue.use(Col);
+Vue.use(Menu);
+Vue.use(Drawer);
+Vue.use(Dropdown);
+Vue.use(Popover);
+Vue.use(Avatar);
+Vue.use(Badge);
+Vue.use(Divider);
+Vue.use(Form);
+Vue.use(Input);
+Vue.use(InputNumber);
+Vue.use(AutoComplete);
+Vue.use(Select);
+Vue.use(Checkbox);
+Vue.use(Radio);
+Vue.use(Switch);
+Vue.use(Upload);
+Vue.use(Rate);
+Vue.use(Space);
+Vue.use(DatePicker);
+Vue.use(Steps);
+Vue.use(Button);
+Vue.use(Collapse);
+Vue.use(Comment);
+Vue.use(Progress);
+Vue.use(Breadcrumb);
+Vue.use(Modal);
+Vue.use(Empty);
+Vue.use(Tooltip);
+Vue.use(Spin);
+Vue.use(Popconfirm);
+Vue.use(Result);
+Vue.use(Icon);
+
+Vue.use({
+  install(Vue) {
+    Vue.prototype.$notification = notification;
+  }
+});

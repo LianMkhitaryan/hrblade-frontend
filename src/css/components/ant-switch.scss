@@ -1,0 +1,31 @@
+.ant-switch {
+  width: 64px;
+  height: 32px;
+  min-width: 64px;
+}
+
+.ant-switch-loading-icon,
+.ant-switch::after {
+  width: 28px;
+  height: 28px;
+}
+
+.ant-switch-small {
+  width: 35px;
+  height: 20px;
+  min-width: 35px;
+
+  .ant-switch-loading-icon,
+  &::after {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.ant-switch-checked {
+  background-color: #fda94c;
+}
+
+.ant-switch-small.ant-switch-checked .ant-switch-loading-icon {
+  margin-left: -17px;
+}

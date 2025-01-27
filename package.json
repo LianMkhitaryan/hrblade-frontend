@@ -1,0 +1,97 @@
+{
+  "name": "app.hrblade.com",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
+  },
+  "dependencies": {
+    "@ffmpeg/core": "^0.8.5",
+    "@ffmpeg/ffmpeg": "^0.9.7",
+    "@vue-stripe/vue-stripe": "^4.1.8",
+    "adapterjs": "^0.15.5",
+    "ant-design-vue": "^1.7.4",
+    "chart.js": "^2.9.4",
+    "core-js": "^3.10.0",
+    "date-fns": "^2.19.0",
+    "ffmpeg.js": "^4.2.9003",
+    "filepond": "^4.30.3",
+    "filepond-plugin-file-validate-type": "^1.2.6",
+    "jszip": "^3.6.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "prismjs": "^1.23.0",
+    "recordrtc": "^5.6.2",
+    "rm": "^0.1.8",
+    "rtcmulticonnection": "^3.7.0",
+    "socket.io-client": "^2.4.0",
+    "tiptap": "^1.32.2",
+    "tiptap-extensions": "^1.35.2",
+    "videojs-record": "^4.4.0",
+    "vue": "^2.6.12",
+    "vue-chartjs": "^3.5.1",
+    "vue-filepond": "^6.0.3",
+    "vue-i18n": "^8.24.2",
+    "vue-meta": "^2.4.0",
+    "vue-plyr": "^7.0.0",
+    "vue-prism-editor": "^1.2.2",
+    "vue-router": "^3.5.1",
+    "vue-scrollto": "^2.20.0",
+    "vue-swatches": "^2.1.1",
+    "vue-webrtc": "^1.2.2",
+    "vue2-perfect-scrollbar": "^1.5.0",
+    "vuedraggable": "^2.24.3",
+    "vuex": "^3.6.2",
+    "webrtc-adapter": "^7.7.1"
+  },
+  "devDependencies": {
+    "@intlify/vue-i18n-loader": "^1.1.0",
+    "@vue/cli-plugin-babel": "^4.5.9",
+    "@vue/cli-plugin-eslint": "^4.5.12",
+    "@vue/cli-plugin-router": "^4.5.12",
+    "@vue/cli-plugin-vuex": "^4.5.12",
+    "@vue/cli-service": "^4.5.12",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-import": "^1.13.3",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-vue": "^6.2.2",
+    "less": "^3.12.2",
+    "less-loader": "^7.1.0",
+    "node-sass": "^4.12.0",
+    "prettier": "^1.19.1",
+    "sass-loader": "^8.0.2",
+    "video.js": "^7.11.4",
+    "vue-cli-plugin-i18n": "^1.0.1",
+    "vue-template-compiler": "^2.6.12"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended",
+      "@vue/prettier"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {
+      "no-inner-declarations": [
+        0,
+        "both"
+      ]
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "en",
+    "tag": "en-US",
+    "title": "English (EN)"
+  },
+  {
+    "name": "ru",
+    "tag": "ru-RU",
+    "title": "Russian (RU)"
+  },
+  {
+    "name": "de",
+    "tag": "de-DE",
+    "title": "German (DE)"
+  },
+  {
+    "name": "es",
+    "tag": "es-ES",
+    "title": "Spanish (ES)"
+  },
+  {
+    "name": "it",
+    "tag": "it-IT",
+    "title": "Italian (IT)"
+  },
+  {
+    "name": "ar",
+    "tag": "ar-SA",
+    "title": "Arabic (AR)"
+  }
+]

@@ -1,0 +1,24 @@
+.ant-breadcrumb {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  cursor: default;
+
+  a {
+    color: #363151;
+  }
+
+  & > span:last-child {
+    color: #363151;
+  }
+}
+
+.ant-breadcrumb-separator {
+  color: #363151;
+}
+
+body.rtl {
+  .ant-breadcrumb {
+    text-align: right;
+  }
+}

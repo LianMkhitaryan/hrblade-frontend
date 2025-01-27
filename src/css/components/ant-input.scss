@@ -1,0 +1,109 @@
+.ant-input {
+  height: 50px;
+  color: $black;
+  padding: 0 15px 0 0;
+  border-radius: 0;
+  font-weight: 400;
+  border: 0;
+  border-bottom: 1px solid $grayish-blue-400;
+  background-color: transparent;
+
+  &::placeholder {
+    color: $grayish-blue-500;
+  }
+
+  &.ant-input-sm {
+    height: 35px;
+    font-size: 14px;
+  }
+
+  &.ant-input-lg {
+    height: 55px;
+  }
+
+  &:read-only {
+    color: $grayish-blue-500 !important;
+  }
+
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+.input-gray:not(.ant-input-affix-wrapper),
+.input-gray input {
+  border: 0;
+  color: $black;
+  background-color: $grayish-blue-300;
+
+  &::placeholder {
+    color: $grayish-blue-500;
+  }
+
+  &:hover {
+    border: 0 !important;
+  }
+
+  &:focus {
+    border: 0 !important;
+    box-shadow: none;
+  }
+}
+
+.ant-input-affix-wrapper .ant-input-prefix,
+.ant-input-affix-wrapper .ant-input-suffix {
+  font-weight: 600;
+  color: $black;
+}
+
+textarea.ant-input {
+  min-height: 125px;
+  padding: 15px 0;
+
+  &.fill {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border-bottom: 0;
+    background-color: #f9f9fa;
+  }
+}
+
+form .ant-mentions,
+form textarea.ant-input {
+  margin-bottom: 0;
+}
+
+.ant-input-prefix-icon {
+  width: 17px;
+  height: 17px;
+  fill: $black;
+}
+
+.ant-input-affix-wrapper {
+  .ant-input:not(:first-child) {
+    padding-left: 35px;
+  }
+
+  .ant-input-prefix {
+    left: 9px;
+  }
+}
+
+.ant-select-search--inline .ant-select-search__field {
+  border-radius: 0;
+}
+
+.ant-select-auto-complete.ant-select .ant-input {
+  height: 50px;
+}
+
+body.rtl {
+  .ant-input {
+    text-align: right;
+  }
+
+  .ant-form-item-label {
+    left: auto;
+    right: 0;
+  }
+}

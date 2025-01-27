@@ -1,0 +1,10 @@
+.ant-radio-group {
+  display: flex;
+  flex-direction: column;
+
+  .ant-radio-wrapper {
+    &:not(:last-of-type) {
+      margin-bottom: 15px;
+    }
+  }
+}

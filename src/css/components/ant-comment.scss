@@ -1,0 +1,36 @@
+.ant-comment {
+  &:hover {
+    .comment-action {
+      opacity: 1;
+    }
+  }
+}
+
+.ant-comment-content-author-time {
+  font-size: 12px !important;
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.comment-action {
+  width: 14px;
+  height: 14px;
+  margin-left: 5px;
+  opacity: 0;
+  transition: 0.25s;
+
+  &:hover {
+    svg {
+      fill: lighten(#334960, 15%);
+    }
+  }
+
+  svg {
+    width: 13px;
+    height: 13px;
+    fill: #334960;
+  }
+}
