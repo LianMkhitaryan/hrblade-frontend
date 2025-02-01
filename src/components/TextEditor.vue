@@ -50,6 +50,14 @@
           <a-icon type="redo" />
         </button>
 
+        <button class="menubar__button" @click="insertImage">
+          <a-icon type="picture" />
+        </button>
+
+        <button class="menubar__button" @click="insertYoutubeVideo">
+          <a-icon type="youtube" />
+        </button>
+
         <slot name="extra-actions"></slot>
       </div>
 
@@ -154,6 +162,14 @@
           <a-icon type="redo" />
         </button>
 
+        <button class="menubar__button" @click="insertImage">
+          <a-icon type="picture" />
+        </button>
+
+        <button class="menubar__button" @click="insertYoutubeVideo()">
+          <a-icon type="youtube" />
+        </button>
+
         <slot name="extra-actions"></slot>
       </div>
     </editor-menu-bar>
@@ -164,6 +180,7 @@
 
 <script>
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap';
+import YoutubeEmbed from '../js/helpers/embedYoutube';
 import {
   Blockquote,
   CodeBlock,
@@ -178,7 +195,8 @@ import {
   Italic,
   Strike,
   Underline,
-  History
+  History,
+  Image
 } from 'tiptap-extensions';
 
 export default {
@@ -239,7 +257,9 @@ export default {
           new Italic(),
           new Strike(),
           new Underline(),
-          new History()
+          new History(),
+          new YoutubeEmbed(),
+          new Image()
         ],
         content: '',
         onUpdate: ({ getHTML }) => {
@@ -293,6 +313,31 @@ export default {
         this.$emit('result', val);
         this.editor.setContent('');
       }
+    },
+
+    insertYoutubeVideo() {
+      console.log('aaaa');
+      const url = prompt('Введите ссылку на YouTube-видео:');
+      if (url) {
+        this.editor.commands.setYoutubeVideo(url);
+      }
+    },
+
+    insertImage() {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/*";
+      input.onchange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            this.editor.commands.image({ src: reader.result }); // Embed as base64
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      input.click();
     }
   },
 
