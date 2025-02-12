@@ -114,7 +114,27 @@ const routes = [
         path: '/profile',
         name: 'profile',
         component: () =>
-          import(/* webpackChunkName: "chank" */ '../views/Profile.vue')
+          import(/* webpackChunkName: "chank" */ '../views/Profile.vue'),
+        children: [
+          {
+            path: ''
+          },
+          {
+            path: 'plan'
+          },
+          {
+            path: 'usage'
+          },
+          {
+            path: 'integrations',
+            component: () =>
+              import(
+                /* webpackChunkName: "chank" */ '../views/ProfileIntegrations.vue'
+              )
+          }
+        ]
+        // component: () =>
+        //   import(/* webpackChunkName: "chank" */ '../views/Profile.vue')
       },
       {
         path: '/profile/edit',

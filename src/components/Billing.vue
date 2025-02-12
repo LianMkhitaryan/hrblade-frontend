@@ -1,148 +1,753 @@
 <template>
-  <card v-if="plan.id" big-padding>
-    <a-spin :spinning="isWaitOnPlanChange">
-      <a-icon slot="indicator" type="loading" style="font-size: 24px" spin />
-
-      <div class="billing-header">
-        <page-title v-if="user.agency" tag="h3" size="16" style="margin-bottom: 15px;">
-          {{ `${$t('page_profile.your_current_plan')} ${plan.name}` }}
-        </page-title>
-
-        <a href="https://billing.stripe.com/p/login/bIYcQ5azO4DNa0EfYY" target="_blank" rel="noopener noreferrer">
-          <app-button type="link">
-            {{ $t('Billing dashboard') }}
-            <icon-blank class="ml-10" />
-          </app-button>
-        </a>
-      </div>
-
-      <page-title v-if="user.agency" tag="h4" size="14">
-        {{ `${$t('users_2')}: ${user.agency.quantity}` }}
-      </page-title>
-
-      <page-title :class="['plan-status', { active: plan.active }]" v-if="user.agency" tag="h4" size="14">
-        {{ `${$t('status')}:` }}
-
-        <span>
-          {{
-            `${plan.active
-              ? $t('plan_status.active')
-              : $t('plan_status.сanceled')
-              } ${plan.active
-                ? ''
-                : `(${$t('plan_status.will_end')} ${format(
-                  new Date(plan.endAt),
-                  'dd MMMM yyyy',
-                  { locale: locales[$i18n.locale] }
-                )})`
-              }`
-          }}
-
-          <span v-if="plan.endPlanAt" style="color: #b6b7c6!important">
-            ({{ plan.endPlanAt }})
-          </span>
-        </span>
-      </page-title>
-
-      <progress-bar :percent="(plan.responsesCount * 100) / plan.responsesLimit" :class="[
-          'mt-auto',
-          'mb-20',
-          plan.responsesCount > plan.responsesLimit ? 'red' : 'orange-gradient'
-        ]">
-        <span slot="label">
-          {{ $t('responses') }}
-
-          <span class="grayish-blue-400">
-            {{
-              `(${$t('period')}: ${tariffPlanPeriod.from} - ${tariffPlanPeriod.to
-              })`
-            }}
-          </span>
-        </span>
-
-        <span slot="value">
-          {{ `${plan.responsesCount} / ${plan.responsesLimit}` }}
-        </span>
-      </progress-bar>
-
-      <progress-bar :percent="(jobsCount * 100) / plan.jobsLimit" :class="[
-          'mt-auto',
-          'mb-20',
-          jobsCount > plan.jobsLimit ? 'red' : 'orange-gradient'
-        ]">
-        <span slot="label">
-          {{ $t('jobs') }}
-        </span>
-
-        <span slot="value">
-          {{ `${jobsCount} / ${plan.jobsLimit}` }}
-        </span>
-      </progress-bar>
-
-      <progress-bar :percent="(companiesCount * 100) / plan.companiesLimit" :class="[
-          'mt-auto',
-          'mb-20',
-          companiesCount > plan.companiesLimit ? 'red' : 'orange-gradient'
-        ]">
-        <span slot="label">
-          {{ $t('companies') }}
-        </span>
-
-        <span slot="value">
-          {{ `${companiesCount} / ${plan.companiesLimit}` }}
-        </span>
-      </progress-bar>
-
-      <billing-info v-if="!plan.trial && plan.price" />
-
+  <div>
+    <card
+      :card-title="$t('change_plan')"
+      button="https://hrblade.com/pricing"
+      :buttonName="$t('Compare plans')"
+    >
+      <template #button-icon>
+        <icon-blank class="button-icon" />
+      </template>
       <template v-if="!$store.state.app.isMobileApp">
-        <div class="mb-10 d-flex flex-wrap">
-          <template v-if="plan.trial || plan.price">
-            <app-button v-for="plan in plans.filter((item) => item.id !== plan.id)" :key="plan.id" type="primary"
-              class="mt-10 mr-10" @click="onChangeSwapPlanId(plan.id)">
-              {{ `${$t('change_to')} ${plan.name}` }}
-            </app-button>
-          </template>
-
-          <template v-else>
-            <app-button v-for="plan in plans" :key="plan.id" type="primary" class="mt-10 mr-10"
-              :style="{ opacity: selectedPlanId === plan.id ? '0.7' : '1' }" @click="onChangePlanId(plan.id)">
-              {{ `${$t('buy')} ${plan.name}` }}
-            </app-button>
-
-            <a href="https://hrblade.com/pricing" target="_blank" rel="noopener noreferrer">
-              <app-button type="link" class="mt-10 mr-10">
-                {{ $t('Compare plans') }}
-                <icon-blank class="ml-10" />
-              </app-button>
-            </a>
-          </template>
-
-          <a-popconfirm v-if="plan.price" :title="`${$t('are_you_sure')}?`" @confirm="handleCancelPlan">
-            <app-button class="ml-md-auto mt-10" :loading="isCancelPlanLoading">
-              {{ $t('cancel_subscription') }}
-            </app-button>
-          </a-popconfirm>
-        </div>
-
-        <card v-if="selectedPlanId" class="mt-20 mb-20">
-          <a-spin :spinning="!planApiKey">
-            <a-icon slot="indicator" type="loading" style="font-size: 24px" spin />
-
-            <a-row v-if="planApiKey">
-              <a-col class="mb-20" :span="24">
-                <a-row type="flex" align="middle" :gutter="[0, { md: 0, sm: 20, xs: 20 }]">
-                  <a-col :xl="4" :md="5" :span="24">
-                    <page-title class="mb-0" tag="h3" size="22" style="font-weight:600">
+        <div class="table-container">
+          <table class="plan-table">
+            <tbody>
+              <tr v-for="plan in plans" :key="plan.id">
+                <td>
+                  {{ plan.name }} <br />
+                  <span>
+                    For small companies less than 10 employees
+                    {{ plan.description }}</span
+                  >
+                </td>
+                <td>
+                  <span>From</span> <br />
+                  {{ plan.price ? `${plan.price}$ / month` : $t('Free') }}
+                </td>
+                <td>
+                  <template v-if="plan.id !== selectedPlanId">
+                    <app-button
+                      type="primary-dark"
+                      class="button"
+                      @click="onChangePlanId(plan.id)"
+                    >
                       {{
-                        plans.find((plan) => plan.id === selectedPlanId).name
+                        plan.trial || plan.price
+                          ? `${$t('pick_plan')}`
+                          : `${$t('pick_plan')}`
+                      }}
+                    </app-button>
+                  </template>
+                  <app-button
+                    v-else
+                    type="primary-dark"
+                    class="button"
+                    disabled
+                  >
+                    {{ $t('Plan selected') }}
+                  </app-button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </card>
+    <div v-if="plan.id && showPaymentCard" big-padding>
+      <a-spin :spinning="isWaitOnPlanChange">
+        <a-icon slot="indicator" type="loading" style="font-size: 24px" spin />
+
+        <billing-info v-if="!plan.trial && plan.price" />
+
+        <template v-if="!$store.state.app.isMobileApp">
+          <div class="mb-10 d-flex flex-wrap">
+            <!-- <template v-if="plan.trial || plan.price">
+              <app-button
+                v-for="plan in plans.filter((item) => item.id !== plan.id)"
+                :key="plan.id"
+                type="primary"
+                class="mt-10 mr-10"
+                @click="onChangeSwapPlanId(plan.id)"
+              >
+                {{ `${$t('change_to')} ${plan.name}` }}
+              </app-button>
+            </template>
+
+            <template v-else>
+              <app-button
+                v-for="plan in plans"
+                :key="plan.id"
+                type="primary"
+                class="mt-10 mr-10"
+                :style="{ opacity: selectedPlanId === plan.id ? '0.7' : '1' }"
+                @click="onChangePlanId(plan.id)"
+              >
+                {{ `${$t('buy')} ${plan.name}` }}
+              </app-button>
+
+              <a
+                href="https://hrblade.com/pricing"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <app-button type="link" class="mt-10 mr-10">
+                  {{ $t('Compare plans') }}
+                  <icon-blank class="ml-10" />
+                </app-button>
+              </a>
+            </template> -->
+
+            <a-popconfirm
+              v-if="plan.price"
+              :title="`${$t('are_you_sure')}?`"
+              @confirm="handleCancelPlan"
+            >
+              <app-button
+                class="ml-md-auto mt-10"
+                :loading="isCancelPlanLoading"
+              >
+                {{ $t('cancel_subscription') }}
+              </app-button>
+            </a-popconfirm>
+          </div>
+
+          <card v-if="selectedPlanId" :card-title="$t('Payment')">
+            <a-spin :spinning="!planApiKey">
+              <a-icon
+                slot="indicator"
+                type="loading"
+                style="font-size: 24px"
+                spin
+              />
+
+              <a-row v-if="planApiKey">
+                <a-col class="mb-20" :span="24">
+                  <a-row
+                    type="flex"
+                    align="middle"
+                    :gutter="[0, { md: 0, sm: 20, xs: 20 }]"
+                  >
+                    <a-col :xl="4" :md="5" :span="24">
+                      <page-title
+                        class="mb-0"
+                        tag="h3"
+                        size="22"
+                        style="font-weight:600"
+                      >
+                        {{
+                          plans.find((plan) => plan.id === selectedPlanId).name
+                        }}
+                      </page-title>
+                    </a-col>
+
+                    <a-col :xl="8" :md="12" :sm="12" :span="24">
+                      <a-radio-group
+                        v-model="selectedPlanPeriod"
+                        class="change-plan-month"
+                        default-value="monthly"
+                        button-style="solid"
+                      >
+                        <a-radio-button value="monthly">
+                          {{ $t('monthly_title') }}
+                        </a-radio-button>
+
+                        <a-radio-button value="annually">
+                          {{ $t('annually_title') }}
+                        </a-radio-button>
+                      </a-radio-group>
+                    </a-col>
+
+                    <a-col :xl="4" :md="7" :sm="12" :span="24">
+                      <a-select
+                        size="small"
+                        :value="selectedPlanCurrency"
+                        :placeholder="$t('currency')"
+                        :defaultActiveFirstOption="false"
+                        @change="onChangeCurrency"
+                      >
+                        <div slot="suffixIcon">
+                          <icon-arrow-down />
+                        </div>
+
+                        <template slot="notFoundContent">
+                          <div
+                            class="ant-empty ant-empty-normal ant-empty-small"
+                          >
+                            <div class="ant-empty-image">
+                              <icon-more fill="rgba(0, 0, 0, 0.25)" />
+                            </div>
+
+                            <p class="ant-empty-description">
+                              {{ $t('no_data') }}
+                            </p>
+                          </div>
+                        </template>
+
+                        <a-select-option
+                          v-for="(currency, index) in new Set(
+                            plans
+                              .find((plan) => plan.id === selectedPlanId)
+                              .prices.map(({ currency }) => currency)
+                          )"
+                          :key="index"
+                          :value="currency"
+                        >
+                          {{ currency }}
+                        </a-select-option>
+                      </a-select>
+                    </a-col>
+                  </a-row>
+                </a-col>
+
+                <a-col :xl="16" :span="24">
+                  <div class="stripe-form">
+                    <page-title tag="h3" size="16" class="stripe-form-title">
+                      <span>
+                        {{ $t('billing_information') }}
+                      </span>
+
+                      <div class="stripe-form-toggle-business">
+                        <a-switch size="small" v-model="isBusiness" />
+                        {{ $t('business') }}
+                      </div>
+                    </page-title>
+
+                    <a-row :gutter="[{ sm: 10, xs: 0 }, 10]">
+                      <a-col :sm="12" :span="24">
+                        <div class="billing-input-wrapper">
+                          <span
+                            v-if="userName.value.length"
+                            class="billing-input-label"
+                          >
+                            {{ $t('placeholders.name') }}
+                          </span>
+
+                          <input
+                            type="text"
+                            :class="[
+                              'billing-input',
+                              { 'billing-input-error': userName.error }
+                            ]"
+                            :placeholder="$t('placeholders.name')"
+                            v-model="userName.value"
+                          />
+                        </div>
+                      </a-col>
+
+                      <a-col v-if="isBusiness" :sm="12" :span="24">
+                        <div class="billing-input-wrapper">
+                          <span
+                            v-if="companyName.value.length"
+                            class="billing-input-label"
+                          >
+                            {{ $t('placeholders.company_name') }}
+                          </span>
+
+                          <input
+                            type="text"
+                            :class="[
+                              'billing-input',
+                              { 'billing-input-error': companyName.error }
+                            ]"
+                            :placeholder="$t('placeholders.company_name')"
+                            v-model="companyName.value"
+                          />
+                        </div>
+                      </a-col>
+
+                      <a-col :sm="12" :span="24">
+                        <div class="billing-input-wrapper">
+                          <span
+                            v-if="userEmail.value.length"
+                            class="billing-input-label"
+                          >
+                            {{ $t('placeholders.email') }}
+                          </span>
+
+                          <input
+                            type="email"
+                            :class="[
+                              'billing-input',
+                              { 'billing-input-error': userEmail.error }
+                            ]"
+                            :placeholder="$t('placeholders.email')"
+                            v-model="userEmail.value"
+                          />
+                        </div>
+                      </a-col>
+
+                      <a-col :sm="12" :span="24">
+                        <div class="billing-input-wrapper">
+                          <span
+                            v-if="userCountry.value.length"
+                            class="billing-input-label"
+                          >
+                            {{ $t('placeholders.country') }}
+                          </span>
+
+                          <select
+                            :class="[
+                              'billing-input',
+                              { 'billing-input-error': userCountry.error }
+                            ]"
+                            v-model="userCountry.value"
+                          >
+                            <option
+                              v-for="country in countries"
+                              :key="country.code"
+                              :value="country.code"
+                            >
+                              {{ country.name }}
+                            </option>
+                          </select>
+
+                          <icon-arrow-down class="billing-input-arrow" />
+                        </div>
+                      </a-col>
+
+                      <a-col :sm="12" :span="24">
+                        <div class="billing-input-wrapper">
+                          <span
+                            v-if="userCity.value.length"
+                            class="billing-input-label"
+                          >
+                            {{ $t('placeholders.сity') }}
+                          </span>
+
+                          <input
+                            type="text"
+                            :class="[
+                              'billing-input',
+                              { 'billing-input-error': userCity.error }
+                            ]"
+                            :placeholder="$t('placeholders.сity')"
+                            v-model="userCity.value"
+                          />
+                        </div>
+                      </a-col>
+
+                      <a-col :sm="12" :span="24">
+                        <div class="billing-input-wrapper">
+                          <span
+                            v-if="userState.value.length"
+                            class="billing-input-label"
+                          >
+                            {{ $t('placeholders.state') }}
+                          </span>
+
+                          <input
+                            type="text"
+                            :class="[
+                              'billing-input',
+                              { 'billing-input-error': userState.error }
+                            ]"
+                            :placeholder="$t('placeholders.state')"
+                            v-model="userState.value"
+                          />
+                        </div>
+                      </a-col>
+
+                      <a-col :sm="12" :span="24">
+                        <div class="billing-input-wrapper">
+                          <span
+                            v-if="userAddress.value.length"
+                            class="billing-input-label"
+                          >
+                            {{ $t('placeholders.address') }}
+                          </span>
+
+                          <input
+                            type="text"
+                            :class="[
+                              'billing-input',
+                              { 'billing-input-error': userAddress.error }
+                            ]"
+                            :placeholder="$t('placeholders.address')"
+                            v-model="userAddress.value"
+                          />
+                        </div>
+                      </a-col>
+
+                      <a-col :sm="12" :span="24">
+                        <div class="billing-input-wrapper">
+                          <span
+                            v-if="userZip.length"
+                            class="billing-input-label"
+                          >
+                            {{ $t('placeholders.zip') }}
+                          </span>
+
+                          <input
+                            type="text"
+                            :class="[
+                              'billing-input',
+                              { 'billing-input-error': userZip.error }
+                            ]"
+                            :placeholder="$t('placeholders.zip')"
+                            v-model="userZip.value"
+                          />
+                        </div>
+                      </a-col>
+
+                      <a-col v-if="isBusiness && isEU" :span="24">
+                        <div class="billing-input-wrapper">
+                          <span
+                            v-if="companyVatNumber.value.length"
+                            class="billing-input-label"
+                          >
+                            {{ $t('placeholders.vat_number') }}
+                          </span>
+
+                          <input
+                            type="text"
+                            :class="[
+                              'billing-input',
+                              { 'billing-input-error': companyVatNumber.error }
+                            ]"
+                            :placeholder="$t('placeholders.vat_number')"
+                            @input="validateVatNumber"
+                            v-model="companyVatNumber.value"
+                          />
+
+                          <span class="billing-input-error-message">
+                            {{ $t('incorrect_vat_number') }}
+                          </span>
+                        </div>
+                      </a-col>
+
+                      <a-col :span="24">
+                        <div class="billing-input-wrapper">
+                          <span
+                            v-if="promocode.value.length"
+                            class="billing-input-label"
+                          >
+                            {{ $t('placeholders.promocode') }}
+                          </span>
+
+                          <input
+                            type="text"
+                            :class="[
+                              'billing-input',
+                              { 'billing-input-error': promocode.error }
+                            ]"
+                            :placeholder="$t('placeholders.promocode')"
+                            @blur="onCheckPromocode"
+                            v-model="promocode.value"
+                          />
+
+                          <app-button
+                            class="billing-input-action"
+                            type="link"
+                            :loading="isCheckPromocode"
+                            @click="onCheckPromocode"
+                          >
+                            {{ $t('Apply') }}
+                          </app-button>
+                        </div>
+                      </a-col>
+
+                      <a-col :span="24">
+                        <stripe-element-card
+                          ref="stripeCard"
+                          :hide-postal-code="true"
+                          :pk="planApiKey"
+                          :elementsOptions="{
+                            locale: this.$i18n.locale || 'en'
+                          }"
+                          :elementStyle="{
+                            base: {
+                              fontSize: '16px',
+                              fontFamily: 'Open Sans, sans-serif',
+                              '::placeholder': {
+                                color: 'rgba(0,0,0,0.65)'
+                              }
+                            }
+                          }"
+                        />
+                      </a-col>
+                    </a-row>
+                  </div>
+                </a-col>
+
+                <a-col :xl="16" :span="24">
+                  <list class="selected-plan-info">
+                    <list-item-info
+                      :label="$t('plan_price')"
+                      class="selected-plan-info-item"
+                    >
+                      <template slot="value">
+                        {{
+                          `${
+                            currentPlanPrice.isYearly
+                              ? (currentPlanPrice.price / 12).toFixed(0)
+                              : currentPlanPrice.price
+                          }${currentPlanPrice.symbol}`
+                        }}
+
+                        <small v-if="currentPlanPrice.isYearly">
+                          {{
+                            `${$t('price_per_month_paid_period', {
+                              period: $t('annually')
+                            })} ${
+                              currentPlanPrice.isYearly
+                                ? `(${currentPlanPrice.price}${currentPlanPrice.symbol})`
+                                : ''
+                            }`
+                          }}
+                        </small>
+
+                        <small v-else>
+                          {{
+                            `${$t('per_month')} ${
+                              currentPlanPrice.isYearly
+                                ? `(${currentPlanPrice.price}${currentPlanPrice.symbol})`
+                                : ''
+                            }`
+                          }}
+                        </small>
+                      </template>
+                    </list-item-info>
+
+                    <list-item-info
+                      v-if="priceDiscont > 0"
+                      label=""
+                      class="selected-plan-info-item"
+                    >
+                      <template slot="value">
+                        <small style="color: #dd2705;">
+                          {{ `${$t('Discount')}: ${priceDiscont}%` }}
+                        </small>
+                      </template>
+                    </list-item-info>
+
+                    <list-item-info
+                      v-if="isVatTaxVisible"
+                      :label="`${currentTax.percent}%, VAT Tax`"
+                    >
+                      <template slot="value">
+                        {{
+                          `${
+                            currentPlanPrice.isYearly
+                              ? (currentTaxValue / 12).toFixed(0)
+                              : currentTaxValue
+                          }${currentPlanPrice.symbol}`
+                        }}
+
+                        <small v-if="currentPlanPrice.isYearly">
+                          {{
+                            `${$t('price_per_month_paid_period', {
+                              period: $t('annually')
+                            })} ${
+                              currentPlanPrice.isYearly
+                                ? `(${currentTaxValue}${currentPlanPrice.symbol})`
+                                : ''
+                            }`
+                          }}
+                        </small>
+
+                        <small v-else>
+                          {{
+                            `${$t('per_month')} ${
+                              currentPlanPrice.isYearly
+                                ? `(${currentTaxValue}${currentPlanPrice.symbol})`
+                                : ''
+                            }`
+                          }}
+                        </small>
+                      </template>
+                    </list-item-info>
+
+                    <list-item-info
+                      v-if="isVatTaxVisible || newDiscontPrice > 0"
+                      :label="$t('total')"
+                      :class="[
+                        'selected-plan-info-item',
+                        {
+                          'selected-plan-info-item-discont': newDiscontPrice > 0
+                        }
+                      ]"
+                    >
+                      <template slot="value">
+                        {{
+                          `${
+                            currentPlanPrice.isYearly
+                              ? newDiscontPrice > 0
+                                ? +(newDiscontPrice / 12).toFixed(0) +
+                                  +(currentTaxValue / 12).toFixed(0)
+                                : +(currentPlanPrice.price / 12).toFixed(0) +
+                                  +(currentTaxValue / 12).toFixed(0)
+                              : newDiscontPrice > 0
+                              ? newDiscontPrice + currentTaxValue
+                              : +currentPlanPrice.price + currentTaxValue
+                          }${currentPlanPrice.symbol}`
+                        }}
+
+                        <small v-if="currentPlanPrice.isYearly">
+                          {{
+                            `${$t('price_per_month_paid_period', {
+                              period: $t('annually')
+                            })} ${
+                              currentPlanPrice.isYearly
+                                ? newDiscontPrice > 0
+                                  ? `(${(
+                                      newDiscontPrice + currentTaxValue
+                                    ).toFixed(2)}${currentPlanPrice.symbol})`
+                                  : `(${(
+                                      +currentPlanPrice.price + currentTaxValue
+                                    ).toFixed(2)}${currentPlanPrice.symbol})`
+                                : ''
+                            }`
+                          }}
+                        </small>
+
+                        <small v-else>
+                          {{
+                            `${$t('per_month')} ${
+                              currentPlanPrice.isYearly
+                                ? newDiscontPrice > 0
+                                  ? `(${(
+                                      newDiscontPrice + currentTaxValue
+                                    ).toFixed(2)}${currentPlanPrice.symbol})`
+                                  : `(${(
+                                      +currentPlanPrice.price + currentTaxValue
+                                    ).toFixed(2)}${currentPlanPrice.symbol})`
+                                : ''
+                            }`
+                          }}
+                        </small>
+                      </template>
+                    </list-item-info>
+                  </list>
+
+                  <small class="plan-info-text">
+                    <template v-if="currentPlanPrice.isYearly">
+                      {{ $t('plan_info_annually_message') }}
+
+                      <a
+                        :href="
+                          `${BASE_PATH_URL[$i18n.locale]}privacy${
+                            $i18n.locale === 'ru' ? '#ru' : ''
+                          }`
+                        "
+                        target="_blank"
+                      >
+                        {{ $t('privacy_policy') }}
+                      </a>
+
+                      {{ $t('and') }}
+
+                      <a
+                        :href="
+                          `${BASE_PATH_URL[$i18n.locale]}terms${
+                            $i18n.locale === 'ru' ? '#ru' : ''
+                          }`
+                        "
+                        target="_blank"
+                      >
+                        {{ $t('terms_and_conditions') }}
+                      </a>
+                    </template>
+
+                    <template v-else>
+                      {{ $t('plan_info_monthly_message') }}
+
+                      <a
+                        :href="
+                          `${BASE_PATH_URL[$i18n.locale]}privacy${
+                            $i18n.locale === 'ru' ? '#ru' : ''
+                          }`
+                        "
+                        target="_blank"
+                      >
+                        {{ $t('privacy_policy') }}
+                      </a>
+
+                      {{ $t('and') }}
+
+                      <a
+                        :href="
+                          `${BASE_PATH_URL[$i18n.locale]}terms${
+                            $i18n.locale === 'ru' ? '#ru' : ''
+                          }`
+                        "
+                        target="_blank"
+                      >
+                        {{ $t('terms_and_conditions') }}
+                      </a>
+                    </template>
+                  </small>
+                </a-col>
+
+                <a-col :span="24">
+                  <a-row
+                    type="flex"
+                    align="middle"
+                    :gutter="[20, { xsl: 0, sm: 10, xs: 10 }]"
+                  >
+                    <a-col :xl="6" :sm="12" :span="24">
+                      <app-button
+                        type="primary"
+                        size="large"
+                        class="medium-size"
+                        :loading="isBuyPlanLoading"
+                        @click="handleBuyPlan"
+                      >
+                        {{ $t('subscribe') }}
+                      </app-button>
+                    </a-col>
+
+                    <a-col :xl="9" :sm="12" :span="24">
+                      <div class="payments-info">
+                        <img src="../assets/payments.svg" alt="Payments" />
+                      </div>
+                    </a-col>
+
+                    <a-col :xl="9" :span="24">
+                      <div class="payments-info-toggle-invoice-wrapper">
+                        <app-button
+                          class="payments-info-toggle-invoice"
+                          type="link"
+                          @click="handleShowInvoice"
+                        >
+                          {{ $t('send_me_invoice_for_bank_transfer') }}
+                        </app-button>
+                      </div>
+                    </a-col>
+                  </a-row>
+                </a-col>
+              </a-row>
+            </a-spin>
+          </card>
+
+          <card v-if="selectedSwapPlanId" class="mt-20 mb-20">
+            <a-row>
+              <a-col class="mb-20" :span="24">
+                <a-row
+                  type="flex"
+                  align="middle"
+                  :gutter="[0, { md: 0, sm: 20, xs: 20 }]"
+                >
+                  <a-col :xl="4" :md="5" :span="24">
+                    <page-title
+                      class="mb-0"
+                      tag="h3"
+                      size="22"
+                      style="font-weight:600"
+                    >
+                      {{
+                        plans.find((plan) => plan.id === selectedSwapPlanId)
+                          .name
                       }}
                     </page-title>
                   </a-col>
 
                   <a-col :xl="8" :md="12" :sm="12" :span="24">
-                    <a-radio-group v-model="selectedPlanPeriod" class="change-plan-month" default-value="monthly"
-                      button-style="solid">
+                    <a-radio-group
+                      v-model="selectedPlanPeriod"
+                      class="change-plan-month"
+                      default-value="monthly"
+                      button-style="solid"
+                    >
                       <a-radio-button value="monthly">
                         {{ $t('monthly_title') }}
                       </a-radio-button>
@@ -154,8 +759,14 @@
                   </a-col>
 
                   <a-col :xl="4" :md="7" :sm="12" :span="24">
-                    <a-select size="small" :value="selectedPlanCurrency" :placeholder="$t('currency')"
-                      :defaultActiveFirstOption="false" @change="onChangeCurrency">
+                    <a-select
+                      size="small"
+                      style="width:120px"
+                      :value="selectedPlanCurrency"
+                      :placeholder="$t('currency')"
+                      :defaultActiveFirstOption="false"
+                      @change="onChangeCurrency"
+                    >
                       <div slot="suffixIcon">
                         <icon-arrow-down />
                       </div>
@@ -172,11 +783,15 @@
                         </div>
                       </template>
 
-                      <a-select-option v-for="(currency, index) in new Set(
-                        plans
-                          .find((plan) => plan.id === selectedPlanId)
-                          .prices.map(({ currency }) => currency)
-                      )" :key="index" :value="currency">
+                      <a-select-option
+                        v-for="(currency, index) in new Set(
+                          plans
+                            .find((plan) => plan.id === selectedSwapPlanId)
+                            .prices.map(({ currency }) => currency)
+                        )"
+                        :key="index"
+                        :value="currency"
+                      >
                         {{ currency }}
                       </a-select-option>
                     </a-select>
@@ -184,433 +799,7 @@
                 </a-row>
               </a-col>
 
-              <a-col :xl="16" :span="24">
-                <div class="stripe-form">
-                  <page-title tag="h3" size="16" class="stripe-form-title">
-                    <span>
-                      {{ $t('billing_information') }}
-                    </span>
-
-                    <div class="stripe-form-toggle-business">
-                      <a-switch size="small" v-model="isBusiness" />
-                      {{ $t('business') }}
-                    </div>
-                  </page-title>
-
-                  <a-row :gutter="[{ sm: 10, xs: 0 }, 10]">
-                    <a-col :sm="12" :span="24">
-                      <div class="billing-input-wrapper">
-                        <span v-if="userName.value.length" class="billing-input-label">
-                          {{ $t('placeholders.name') }}
-                        </span>
-
-                        <input type="text" :class="[
-                          'billing-input',
-                          { 'billing-input-error': userName.error }
-                        ]" :placeholder="$t('placeholders.name')" v-model="userName.value" />
-                      </div>
-                    </a-col>
-
-                    <a-col v-if="isBusiness" :sm="12" :span="24">
-                      <div class="billing-input-wrapper">
-                        <span v-if="companyName.value.length" class="billing-input-label">
-                          {{ $t('placeholders.company_name') }}
-                        </span>
-
-                        <input type="text" :class="[
-                          'billing-input',
-                          { 'billing-input-error': companyName.error }
-                        ]" :placeholder="$t('placeholders.company_name')" v-model="companyName.value" />
-                      </div>
-                    </a-col>
-
-                    <a-col :sm="12" :span="24">
-                      <div class="billing-input-wrapper">
-                        <span v-if="userEmail.value.length" class="billing-input-label">
-                          {{ $t('placeholders.email') }}
-                        </span>
-
-                        <input type="email" :class="[
-                          'billing-input',
-                          { 'billing-input-error': userEmail.error }
-                        ]" :placeholder="$t('placeholders.email')" v-model="userEmail.value" />
-                      </div>
-                    </a-col>
-
-                    <a-col :sm="12" :span="24">
-                      <div class="billing-input-wrapper">
-                        <span v-if="userCountry.value.length" class="billing-input-label">
-                          {{ $t('placeholders.country') }}
-                        </span>
-
-                        <select :class="[
-                          'billing-input',
-                          { 'billing-input-error': userCountry.error }
-                        ]" v-model="userCountry.value">
-                          <option v-for="country in countries" :key="country.code" :value="country.code">
-                            {{ country.name }}
-                          </option>
-                        </select>
-
-                        <icon-arrow-down class="billing-input-arrow" />
-                      </div>
-                    </a-col>
-
-                    <a-col :sm="12" :span="24">
-                      <div class="billing-input-wrapper">
-                        <span v-if="userCity.value.length" class="billing-input-label">
-                          {{ $t('placeholders.сity') }}
-                        </span>
-
-                        <input type="text" :class="[
-                          'billing-input',
-                          { 'billing-input-error': userCity.error }
-                        ]" :placeholder="$t('placeholders.сity')" v-model="userCity.value" />
-                      </div>
-                    </a-col>
-
-                    <a-col :sm="12" :span="24">
-                      <div class="billing-input-wrapper">
-                        <span v-if="userState.value.length" class="billing-input-label">
-                          {{ $t('placeholders.state') }}
-                        </span>
-
-                        <input type="text" :class="[
-                          'billing-input',
-                          { 'billing-input-error': userState.error }
-                        ]" :placeholder="$t('placeholders.state')" v-model="userState.value" />
-                      </div>
-                    </a-col>
-
-                    <a-col :sm="12" :span="24">
-                      <div class="billing-input-wrapper">
-                        <span v-if="userAddress.value.length" class="billing-input-label">
-                          {{ $t('placeholders.address') }}
-                        </span>
-
-                        <input type="text" :class="[
-                          'billing-input',
-                          { 'billing-input-error': userAddress.error }
-                        ]" :placeholder="$t('placeholders.address')" v-model="userAddress.value" />
-                      </div>
-                    </a-col>
-
-                    <a-col :sm="12" :span="24">
-                      <div class="billing-input-wrapper">
-                        <span v-if="userZip.length" class="billing-input-label">
-                          {{ $t('placeholders.zip') }}
-                        </span>
-
-                        <input type="text" :class="[
-                          'billing-input',
-                          { 'billing-input-error': userZip.error }
-                        ]" :placeholder="$t('placeholders.zip')" v-model="userZip.value" />
-                      </div>
-                    </a-col>
-
-                    <a-col v-if="isBusiness && isEU" :span="24">
-                      <div class="billing-input-wrapper">
-                        <span v-if="companyVatNumber.value.length" class="billing-input-label">
-                          {{ $t('placeholders.vat_number') }}
-                        </span>
-
-                        <input type="text" :class="[
-                          'billing-input',
-                          { 'billing-input-error': companyVatNumber.error }
-                        ]" :placeholder="$t('placeholders.vat_number')" @input="validateVatNumber"
-                          v-model="companyVatNumber.value" />
-
-                        <span class="billing-input-error-message">
-                          {{ $t('incorrect_vat_number') }}
-                        </span>
-                      </div>
-                    </a-col>
-
-                    <a-col :span="24">
-                      <div class="billing-input-wrapper">
-                        <span v-if="promocode.value.length" class="billing-input-label">
-                          {{ $t('placeholders.promocode') }}
-                        </span>
-
-                        <input type="text" :class="[
-                          'billing-input',
-                          { 'billing-input-error': promocode.error }
-                        ]" :placeholder="$t('placeholders.promocode')" @blur="onCheckPromocode"
-                          v-model="promocode.value" />
-
-                        <app-button class="billing-input-action" type="link" :loading="isCheckPromocode"
-                          @click="onCheckPromocode">
-                          {{ $t('Apply') }}
-                        </app-button>
-                      </div>
-                    </a-col>
-
-                    <a-col :span="24">
-                      <stripe-element-card ref="stripeCard" :hide-postal-code="true" :pk="planApiKey" :elementsOptions="{
-                          locale: this.$i18n.locale || 'en'
-                        }" :elementStyle="{
-      base: {
-        fontSize: '16px',
-        fontFamily: 'Open Sans, sans-serif',
-        '::placeholder': {
-          color: 'rgba(0,0,0,0.65)'
-        }
-      }
-    }" />
-                    </a-col>
-                  </a-row>
-                </div>
-              </a-col>
-
-              <a-col :xl="16" :span="24">
-                <list class="selected-plan-info">
-                  <list-item-info :label="$t('plan_price')" class="selected-plan-info-item">
-                    <template slot="value">
-                      {{
-                        `${currentPlanPrice.isYearly
-                          ? (currentPlanPrice.price / 12).toFixed(0)
-                          : currentPlanPrice.price
-                          }${currentPlanPrice.symbol}`
-                      }}
-
-                      <small v-if="currentPlanPrice.isYearly">
-                        {{
-                          `${$t('price_per_month_paid_period', {
-                            period: $t('annually')
-                          })} ${currentPlanPrice.isYearly
-                            ? `(${currentPlanPrice.price}${currentPlanPrice.symbol})`
-                            : ''
-                          }`
-                        }}
-                      </small>
-
-                      <small v-else>
-                        {{
-                          `${$t('per_month')} ${currentPlanPrice.isYearly
-                            ? `(${currentPlanPrice.price}${currentPlanPrice.symbol})`
-                            : ''
-                            }`
-                        }}
-                      </small>
-                    </template>
-                  </list-item-info>
-
-                  <list-item-info v-if="priceDiscont > 0" label="" class="selected-plan-info-item">
-                    <template slot="value">
-                      <small style="color: #dd2705;">
-                        {{ `${$t('Discount')}: ${priceDiscont}%` }}
-                      </small>
-                    </template>
-                  </list-item-info>
-
-                  <list-item-info v-if="isVatTaxVisible" :label="`${currentTax.percent}%, VAT Tax`">
-                    <template slot="value">
-                      {{
-                        `${currentPlanPrice.isYearly
-                          ? (currentTaxValue / 12).toFixed(0)
-                          : currentTaxValue
-                          }${currentPlanPrice.symbol}`
-                      }}
-
-                      <small v-if="currentPlanPrice.isYearly">
-                        {{
-                          `${$t('price_per_month_paid_period', {
-                            period: $t('annually')
-                          })} ${currentPlanPrice.isYearly
-                            ? `(${currentTaxValue}${currentPlanPrice.symbol})`
-                            : ''
-                          }`
-                        }}
-                      </small>
-
-                      <small v-else>
-                        {{
-                          `${$t('per_month')} ${currentPlanPrice.isYearly
-                            ? `(${currentTaxValue}${currentPlanPrice.symbol})`
-                            : ''
-                            }`
-                        }}
-                      </small>
-                    </template>
-                  </list-item-info>
-
-                  <list-item-info v-if="isVatTaxVisible || newDiscontPrice > 0" :label="$t('total')" :class="[
-                        'selected-plan-info-item',
-                        { 'selected-plan-info-item-discont': newDiscontPrice > 0 }
-                      ]">
-                    <template slot="value">
-                      {{
-                        `${currentPlanPrice.isYearly
-                          ? newDiscontPrice > 0
-                            ? +(newDiscontPrice / 12).toFixed(0) +
-                            +(currentTaxValue / 12).toFixed(0)
-                            : +(currentPlanPrice.price / 12).toFixed(0) +
-                            +(currentTaxValue / 12).toFixed(0)
-                          : newDiscontPrice > 0
-                            ? newDiscontPrice + currentTaxValue
-                            : +currentPlanPrice.price + currentTaxValue
-                          }${currentPlanPrice.symbol}`
-                      }}
-
-                      <small v-if="currentPlanPrice.isYearly">
-                        {{
-                          `${$t('price_per_month_paid_period', {
-                            period: $t('annually')
-                          })} ${currentPlanPrice.isYearly
-                            ? newDiscontPrice > 0
-                              ? `(${(
-                                newDiscontPrice + currentTaxValue
-                              ).toFixed(2)}${currentPlanPrice.symbol})`
-                              : `(${(
-                                +currentPlanPrice.price + currentTaxValue
-                              ).toFixed(2)}${currentPlanPrice.symbol})`
-                            : ''
-                          }`
-                        }}
-                      </small>
-
-                      <small v-else>
-                        {{
-                          `${$t('per_month')} ${currentPlanPrice.isYearly
-                            ? newDiscontPrice > 0
-                              ? `(${(
-                                newDiscontPrice + currentTaxValue
-                              ).toFixed(2)}${currentPlanPrice.symbol})`
-                              : `(${(
-                                +currentPlanPrice.price + currentTaxValue
-                              ).toFixed(2)}${currentPlanPrice.symbol})`
-                            : ''
-                            }`
-                        }}
-                      </small>
-                    </template>
-                  </list-item-info>
-                </list>
-
-                <small class="plan-info-text">
-                  <template v-if="currentPlanPrice.isYearly">
-                    {{ $t('plan_info_annually_message') }}
-
-                    <a :href="`${BASE_PATH_URL[$i18n.locale]}privacy${$i18n.locale === 'ru' ? '#ru' : ''
-                      }`
-                      " target="_blank">
-                      {{ $t('privacy_policy') }}
-                    </a>
-
-                    {{ $t('and') }}
-
-                    <a :href="`${BASE_PATH_URL[$i18n.locale]}terms${$i18n.locale === 'ru' ? '#ru' : ''
-                      }`
-                      " target="_blank">
-                      {{ $t('terms_and_conditions') }}
-                    </a>
-                  </template>
-
-                  <template v-else>
-                    {{ $t('plan_info_monthly_message') }}
-
-                    <a :href="`${BASE_PATH_URL[$i18n.locale]}privacy${$i18n.locale === 'ru' ? '#ru' : ''
-                      }`
-                      " target="_blank">
-                      {{ $t('privacy_policy') }}
-                    </a>
-
-                    {{ $t('and') }}
-
-                    <a :href="`${BASE_PATH_URL[$i18n.locale]}terms${$i18n.locale === 'ru' ? '#ru' : ''
-                      }`
-                      " target="_blank">
-                      {{ $t('terms_and_conditions') }}
-                    </a>
-                  </template>
-                </small>
-              </a-col>
-
-              <a-col :span="24">
-                <a-row type="flex" align="middle" :gutter="[20, { xsl: 0, sm: 10, xs: 10 }]">
-                  <a-col :xl="6" :sm="12" :span="24">
-                    <app-button type="primary" size="large" class="medium-size" :loading="isBuyPlanLoading"
-                      @click="handleBuyPlan">
-                      {{ $t('subscribe') }}
-                    </app-button>
-                  </a-col>
-
-                  <a-col :xl="9" :sm="12" :span="24">
-                    <div class="payments-info">
-                      <img src="../assets/payments.svg" alt="Payments" />
-                    </div>
-                  </a-col>
-
-                  <a-col :xl="9" :span="24">
-                    <div class="payments-info-toggle-invoice-wrapper">
-                      <app-button class="payments-info-toggle-invoice" type="link" @click="handleShowInvoice">
-                        {{ $t('send_me_invoice_for_bank_transfer') }}
-                      </app-button>
-                    </div>
-                  </a-col>
-                </a-row>
-              </a-col>
-            </a-row>
-          </a-spin>
-        </card>
-
-        <card v-if="selectedSwapPlanId" class="mt-20 mb-20">
-          <a-row>
-            <a-col class="mb-20" :span="24">
-              <a-row type="flex" align="middle" :gutter="[0, { md: 0, sm: 20, xs: 20 }]">
-                <a-col :xl="4" :md="5" :span="24">
-                  <page-title class="mb-0" tag="h3" size="22" style="font-weight:600">
-                    {{
-                      plans.find((plan) => plan.id === selectedSwapPlanId).name
-                    }}
-                  </page-title>
-                </a-col>
-
-                <a-col :xl="8" :md="12" :sm="12" :span="24">
-                  <a-radio-group v-model="selectedPlanPeriod" class="change-plan-month" default-value="monthly"
-                    button-style="solid">
-                    <a-radio-button value="monthly">
-                      {{ $t('monthly_title') }}
-                    </a-radio-button>
-
-                    <a-radio-button value="annually">
-                      {{ $t('annually_title') }}
-                    </a-radio-button>
-                  </a-radio-group>
-                </a-col>
-
-                <a-col :xl="4" :md="7" :sm="12" :span="24">
-                  <a-select size="small" style="width:120px" :value="selectedPlanCurrency" :placeholder="$t('currency')"
-                    :defaultActiveFirstOption="false" @change="onChangeCurrency">
-                    <div slot="suffixIcon">
-                      <icon-arrow-down />
-                    </div>
-
-                    <template slot="notFoundContent">
-                      <div class="ant-empty ant-empty-normal ant-empty-small">
-                        <div class="ant-empty-image">
-                          <icon-more fill="rgba(0, 0, 0, 0.25)" />
-                        </div>
-
-                        <p class="ant-empty-description">
-                          {{ $t('no_data') }}
-                        </p>
-                      </div>
-                    </template>
-
-                    <a-select-option v-for="(currency, index) in new Set(
-                      plans
-                        .find((plan) => plan.id === selectedSwapPlanId)
-                        .prices.map(({ currency }) => currency)
-                    )" :key="index" :value="currency">
-                      {{ currency }}
-                    </a-select-option>
-                  </a-select>
-                </a-col>
-              </a-row>
-            </a-col>
-
-            <!-- <a-col :span="24">
+              <!-- <a-col :span="24">
               <div class="billing-input-wrapper">
                 <span v-if="promocode.value.length" class="billing-input-label">
                   {{ $t('placeholders.promocode') }}
@@ -628,174 +817,221 @@
               </div>
             </a-col> -->
 
-            <a-col :xl="16" :span="24">
-              <list class="selected-plan-info">
-                <list-item-info :label="$t('plan_price')" class="selected-plan-info-item">
-                  <template slot="value">
-                    {{
-                      `${currentPlanPrice.isYearly
-                        ? (currentPlanPrice.price / 12).toFixed(0)
-                        : currentPlanPrice.price
+              <a-col :xl="16" :span="24">
+                <list class="selected-plan-info">
+                  <list-item-info
+                    :label="$t('plan_price')"
+                    class="selected-plan-info-item"
+                  >
+                    <template slot="value">
+                      {{
+                        `${
+                          currentPlanPrice.isYearly
+                            ? (currentPlanPrice.price / 12).toFixed(0)
+                            : currentPlanPrice.price
                         }${currentPlanPrice.symbol}`
-                    }}
-
-                    <small v-if="currentPlanPrice.isYearly">
-                      {{
-                        `${$t('price_per_month_paid_period', {
-                          period: $t('annually')
-                        })} ${currentPlanPrice.isYearly
-                          ? `(${currentPlanPrice.price}${currentPlanPrice.symbol})`
-                          : ''
-                        }`
                       }}
-                    </small>
 
-                    <small v-else>
-                      {{
-                        `${$t('per_month')} ${currentPlanPrice.isYearly
-                          ? `(${currentPlanPrice.price}${currentPlanPrice.symbol})`
-                          : ''
+                      <small v-if="currentPlanPrice.isYearly">
+                        {{
+                          `${$t('price_per_month_paid_period', {
+                            period: $t('annually')
+                          })} ${
+                            currentPlanPrice.isYearly
+                              ? `(${currentPlanPrice.price}${currentPlanPrice.symbol})`
+                              : ''
                           }`
-                      }}
-                    </small>
+                        }}
+                      </small>
+
+                      <small v-else>
+                        {{
+                          `${$t('per_month')} ${
+                            currentPlanPrice.isYearly
+                              ? `(${currentPlanPrice.price}${currentPlanPrice.symbol})`
+                              : ''
+                          }`
+                        }}
+                      </small>
+                    </template>
+                  </list-item-info>
+
+                  <template v-if="isVatTaxVisible">
+                    <list-item-info :label="`${currentTax.percent}%, VAT Tax`">
+                      <template slot="value">
+                        {{
+                          `${
+                            currentPlanPrice.isYearly
+                              ? (currentTaxValue / 12).toFixed(0)
+                              : currentTaxValue
+                          }${currentPlanPrice.symbol}`
+                        }}
+
+                        <small v-if="currentPlanPrice.isYearly">
+                          {{
+                            `${$t('price_per_month_paid_period', {
+                              period: $t('annually')
+                            })} ${
+                              currentPlanPrice.isYearly
+                                ? `(${currentTaxValue}${currentPlanPrice.symbol})`
+                                : ''
+                            }`
+                          }}
+                        </small>
+
+                        <small v-else>
+                          {{
+                            `${$t('per_month')} ${
+                              currentPlanPrice.isYearly
+                                ? `(${currentTaxValue}${currentPlanPrice.symbol})`
+                                : ''
+                            }`
+                          }}
+                        </small>
+                      </template>
+                    </list-item-info>
+
+                    <list-item-info
+                      :label="$t('total')"
+                      class="selected-plan-info-item"
+                    >
+                      <template slot="value">
+                        {{
+                          `${
+                            currentPlanPrice.isYearly
+                              ? +(currentPlanPrice.price / 12).toFixed(0) +
+                                +(currentTaxValue / 12).toFixed(0)
+                              : +currentPlanPrice.price + currentTaxValue
+                          }${currentPlanPrice.symbol}`
+                        }}
+
+                        <small v-if="currentPlanPrice.isYearly">
+                          {{
+                            `${$t('price_per_month_paid_period', {
+                              period: $t('annually')
+                            })} ${
+                              currentPlanPrice.isYearly
+                                ? `(${+currentPlanPrice.price +
+                                    currentTaxValue}${currentPlanPrice.symbol})`
+                                : ''
+                            }`
+                          }}
+                        </small>
+
+                        <small v-else>
+                          {{
+                            `${$t('per_month')} ${
+                              currentPlanPrice.isYearly
+                                ? `(${+currentPlanPrice.price +
+                                    currentTaxValue}${currentPlanPrice.symbol})`
+                                : ''
+                            }`
+                          }}
+                        </small>
+                      </template>
+                    </list-item-info>
                   </template>
-                </list-item-info>
+                </list>
 
-                <template v-if="isVatTaxVisible">
-                  <list-item-info :label="`${currentTax.percent}%, VAT Tax`">
-                    <template slot="value">
-                      {{
-                        `${currentPlanPrice.isYearly
-                          ? (currentTaxValue / 12).toFixed(0)
-                          : currentTaxValue
-                          }${currentPlanPrice.symbol}`
-                      }}
+                <small class="plan-info-text">
+                  <template v-if="currentPlanPrice.isYearly">
+                    {{ $t('plan_info_annually_message') }}
 
-                      <small v-if="currentPlanPrice.isYearly">
-                        {{
-                          `${$t('price_per_month_paid_period', {
-                            period: $t('annually')
-                          })} ${currentPlanPrice.isYearly
-                            ? `(${currentTaxValue}${currentPlanPrice.symbol})`
-                            : ''
-                          }`
-                        }}
-                      </small>
+                    <a
+                      :href="
+                        `${BASE_PATH_URL[$i18n.locale]}privacy${
+                          $i18n.locale === 'ru' ? '#ru' : ''
+                        }`
+                      "
+                      target="_blank"
+                    >
+                      {{ $t('privacy_policy') }}
+                    </a>
 
-                      <small v-else>
-                        {{
-                          `${$t('per_month')} ${currentPlanPrice.isYearly
-                            ? `(${currentTaxValue}${currentPlanPrice.symbol})`
-                            : ''
-                            }`
-                        }}
-                      </small>
-                    </template>
-                  </list-item-info>
+                    {{ $t('and') }}
 
-                  <list-item-info :label="$t('total')" class="selected-plan-info-item">
-                    <template slot="value">
-                      {{
-                        `${currentPlanPrice.isYearly
-                          ? +(currentPlanPrice.price / 12).toFixed(0) +
-                          +(currentTaxValue / 12).toFixed(0)
-                          : +currentPlanPrice.price + currentTaxValue
-                          }${currentPlanPrice.symbol}`
-                      }}
+                    <a
+                      :href="
+                        `${BASE_PATH_URL[$i18n.locale]}terms${
+                          $i18n.locale === 'ru' ? '#ru' : ''
+                        }`
+                      "
+                      target="_blank"
+                    >
+                      {{ $t('terms_and_conditions') }}
+                    </a>
+                  </template>
 
-                      <small v-if="currentPlanPrice.isYearly">
-                        {{
-                          `${$t('price_per_month_paid_period', {
-                            period: $t('annually')
-                          })} ${currentPlanPrice.isYearly
-                            ? `(${+currentPlanPrice.price + currentTaxValue}${currentPlanPrice.symbol
-                            })`
-                            : ''
-                          }`
-                        }}
-                      </small>
+                  <template v-else>
+                    {{ $t('plan_info_monthly_message') }}
 
-                      <small v-else>
-                        {{
-                          `${$t('per_month')} ${currentPlanPrice.isYearly
-                            ? `(${+currentPlanPrice.price + currentTaxValue}${currentPlanPrice.symbol
-                            })`
-                            : ''
-                            }`
-                        }}
-                      </small>
-                    </template>
-                  </list-item-info>
-                </template>
-              </list>
+                    <a
+                      :href="
+                        `${BASE_PATH_URL[$i18n.locale]}privacy${
+                          $i18n.locale === 'ru' ? '#ru' : ''
+                        }`
+                      "
+                      target="_blank"
+                    >
+                      {{ $t('privacy_policy') }}
+                    </a>
 
-              <small class="plan-info-text">
-                <template v-if="currentPlanPrice.isYearly">
-                  {{ $t('plan_info_annually_message') }}
+                    {{ $t('and') }}
 
-                  <a :href="`${BASE_PATH_URL[$i18n.locale]}privacy${$i18n.locale === 'ru' ? '#ru' : ''
-                    }`
-                    " target="_blank">
-                    {{ $t('privacy_policy') }}
-                  </a>
+                    <a
+                      :href="
+                        `${BASE_PATH_URL[$i18n.locale]}terms${
+                          $i18n.locale === 'ru' ? '#ru' : ''
+                        }`
+                      "
+                      target="_blank"
+                    >
+                      {{ $t('terms_and_conditions') }}
+                    </a>
+                  </template>
+                </small>
+              </a-col>
 
-                  {{ $t('and') }}
-
-                  <a :href="`${BASE_PATH_URL[$i18n.locale]}terms${$i18n.locale === 'ru' ? '#ru' : ''
-                    }`
-                    " target="_blank">
-                    {{ $t('terms_and_conditions') }}
-                  </a>
-                </template>
-
-                <template v-else>
-                  {{ $t('plan_info_monthly_message') }}
-
-                  <a :href="`${BASE_PATH_URL[$i18n.locale]}privacy${$i18n.locale === 'ru' ? '#ru' : ''
-                    }`
-                    " target="_blank">
-                    {{ $t('privacy_policy') }}
-                  </a>
-
-                  {{ $t('and') }}
-
-                  <a :href="`${BASE_PATH_URL[$i18n.locale]}terms${$i18n.locale === 'ru' ? '#ru' : ''
-                    }`
-                    " target="_blank">
-                    {{ $t('terms_and_conditions') }}
-                  </a>
-                </template>
-              </small>
-            </a-col>
-
-            <a-col :span="24">
-              <a-row type="flex" align="middle" :gutter="[20, { xsl: 0, sm: 10, xs: 10 }]">
-                <a-col :xl="6" :sm="12" :span="24">
-                  <app-button :loading="isSwapPlanLoading" @click="handleSwapPlan">
-                    {{ $t('change') }}
-                  </app-button>
-                </a-col>
-
-                <a-col :xl="9" :sm="12" :span="24">
-                  <div class="payments-info">
-                    <img src="../assets/payments.svg" alt="Payments" />
-                  </div>
-                </a-col>
-
-                <a-col :xl="9" :span="24">
-                  <div class="payments-info-toggle-invoice-wrapper">
-                    <app-button class="payments-info-toggle-invoice" type="link" @click="handleShowInvoice">
-                      {{ $t('send_me_invoice_for_bank_transfer') }}
+              <a-col :span="24">
+                <a-row
+                  type="flex"
+                  align="middle"
+                  :gutter="[20, { xsl: 0, sm: 10, xs: 10 }]"
+                >
+                  <a-col :xl="6" :sm="12" :span="24">
+                    <app-button
+                      :loading="isSwapPlanLoading"
+                      @click="handleSwapPlan"
+                    >
+                      {{ $t('change') }}
                     </app-button>
-                  </div>
-                </a-col>
-              </a-row>
-            </a-col>
-          </a-row>
-        </card>
-      </template>
-    </a-spin>
-  </card>
+                  </a-col>
+
+                  <a-col :xl="9" :sm="12" :span="24">
+                    <div class="payments-info">
+                      <img src="../assets/payments.svg" alt="Payments" />
+                    </div>
+                  </a-col>
+
+                  <a-col :xl="9" :span="24">
+                    <div class="payments-info-toggle-invoice-wrapper">
+                      <app-button
+                        class="payments-info-toggle-invoice"
+                        type="link"
+                        @click="handleShowInvoice"
+                      >
+                        {{ $t('send_me_invoice_for_bank_transfer') }}
+                      </app-button>
+                    </div>
+                  </a-col>
+                </a-row>
+              </a-col>
+            </a-row>
+          </card>
+        </template>
+      </a-spin>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -812,7 +1048,6 @@ import BillingInfo from './BillingInfo';
 import Card from './Card';
 import PageTitle from './PageTitle';
 import AppButton from './AppButton';
-import ProgressBar from './ProgressBar';
 import List from './List';
 import ListItemInfo from './ListItemInfo';
 
@@ -828,7 +1063,6 @@ export default {
     Card,
     PageTitle,
     AppButton,
-    ProgressBar,
     List,
     ListItemInfo,
     IconArrowDown,
@@ -846,6 +1080,7 @@ export default {
       isCancelPlanLoading: false,
       isWaitOnPlanChange: false,
       isCheckPromocode: false,
+      showPaymentCard: false,
       // isVatNumberValid: true,
 
       newDiscontPrice: 0,
@@ -1011,6 +1246,7 @@ export default {
   },
 
   created() {
+    console.log(this.plans, 'plans');
     if (
       this.$route.query.plan_id ||
       this.$route.query.yearly ||
@@ -1083,6 +1319,7 @@ export default {
       this.priceDiscont = 0;
       this.promocode.value = '';
       this.promocode.error = false;
+      this.showPaymentCard = true;
 
       const currency = [
         ...new Set(
@@ -1315,7 +1552,7 @@ export default {
       return valid;
     },
 
-    validateVatNumber: debounce(async function () {
+    validateVatNumber: debounce(async function() {
       const { companyVatNumber } = this;
 
       if (companyVatNumber.value.length) {
@@ -1700,7 +1937,7 @@ export default {
   &.billing-input-error {
     border-color: #fa755a;
 
-    +.billing-input-error-message {
+    + .billing-input-error-message {
       display: block;
     }
   }
@@ -1841,7 +2078,6 @@ export default {
 }
 
 .selected-plan-info-item-discont {
-
   .list-item-info-label,
   .list-item-info-value,
   .list-item-info-value small {
@@ -1856,5 +2092,47 @@ export default {
   padding: 0;
   color: #fda94c !important;
   transform: translateY(-50%);
+}
+
+.button-icon {
+  margin-left: 22px;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.plan-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  button {
+    height: 43px !important;
+    min-width: 156px;
+  }
+
+  td {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+    font-family: 'Montserrat';
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+  }
+
+  td:first-child {
+    font-weight: 800;
+  }
+  td:last-child {
+    text-align: right;
+  }
+
+  td span {
+    font-size: 12px;
+    font-weight: 500;
+    font-style: normal;
+  }
 }
 </style>

@@ -25,16 +25,15 @@
         </page-title>
       </template>
 
-      <a-row type="flex" :gutter="[
-        { lg: 20, md: 10 },
-        { lg: 20, sm: 10, xs: 10 }
-      ]">
+      <a-row
+        type="flex"
+        :gutter="[
+          { lg: 20, md: 10 },
+          { lg: 20, sm: 10, xs: 10 }
+        ]"
+      >
         <a-col :md="12" :span="24">
-          <card>
-            <page-title tag="h3" size="16" class="mb-15">
-              {{ $t('page_job_invite.invite_link') }}
-            </page-title>
-
+          <card :card-title="$t('page_job_invite.invite_link')">
             <p class="text-gray-300">
               {{ $t('page_job_invite.copy_and_share') }}
               <br />
@@ -42,8 +41,14 @@
             </p>
 
             <div class="d-flex">
-              <a-input ref="inviteLink" class="mr-10 copy" size="large" readonly
-                :value="`${BASE_PATH_APP_URL}i/${jobInfo.hashLink}`" @click="handleCopy" />
+              <a-input
+                ref="inviteLink"
+                class="mr-10 copy"
+                size="large"
+                readonly
+                :value="`${BASE_PATH_APP_URL}i/${jobInfo.hashLink}`"
+                @click="handleCopy"
+              />
 
               <app-button type="primary" size="large" @click="handleCopy">
                 {{ $t('copy') }}
@@ -53,15 +58,16 @@
         </a-col>
 
         <a-col :md="12" :span="24">
-          <card>
-            <page-title tag="h3" size="16" class="mb-15">
-              {{ $t('share_to_social_networks') }}
-            </page-title>
-
+          <card :card-title="$t('share_to_social_networks')">
             <ul class="social-sharing">
               <li class="social-sharing-item">
-                <a :href="`https://www.facebook.com/sharer/sharer.php?u=${BASE_PATH_APP_URL}i/${jobInfo.hashLink}`
-                  " target="_blank" class="social-sharing-link">
+                <a
+                  :href="
+                    `https://www.facebook.com/sharer/sharer.php?u=${BASE_PATH_APP_URL}i/${jobInfo.hashLink}`
+                  "
+                  target="_blank"
+                  class="social-sharing-link"
+                >
                   <icon-fb class="social-sharing-icon" />
 
                   <div class="social-sharing-label">
@@ -71,8 +77,13 @@
               </li>
 
               <li class="social-sharing-item">
-                <a :href="`https://www.linkedin.com/shareArticle?mini=true&url=${BASE_PATH_APP_URL}i/${jobInfo.hashLink}&title=&summary=&source=`
-                  " target="_blank" class="social-sharing-link">
+                <a
+                  :href="
+                    `https://www.linkedin.com/shareArticle?mini=true&url=${BASE_PATH_APP_URL}i/${jobInfo.hashLink}&title=&summary=&source=`
+                  "
+                  target="_blank"
+                  class="social-sharing-link"
+                >
                   <icon-linkedin class="social-sharing-icon" />
 
                   <div class="social-sharing-label">
@@ -82,8 +93,13 @@
               </li>
 
               <li class="social-sharing-item">
-                <a :href="`https://twitter.com/intent/tweet?url=${BASE_PATH_APP_URL}i/${jobInfo.hashLink}&text=`
-                  " target="_blank" class="social-sharing-link">
+                <a
+                  :href="
+                    `https://twitter.com/intent/tweet?url=${BASE_PATH_APP_URL}i/${jobInfo.hashLink}&text=`
+                  "
+                  target="_blank"
+                  class="social-sharing-link"
+                >
                   <icon-twitter class="social-sharing-icon" />
 
                   <div class="social-sharing-label">
@@ -93,8 +109,13 @@
               </li>
 
               <li class="social-sharing-item">
-                <a :href="`https://vk.com/share.php?url=${BASE_PATH_APP_URL}i/${jobInfo.hashLink}`
-                  " target="_blank" class="social-sharing-link">
+                <a
+                  :href="
+                    `https://vk.com/share.php?url=${BASE_PATH_APP_URL}i/${jobInfo.hashLink}`
+                  "
+                  target="_blank"
+                  class="social-sharing-link"
+                >
                   <icon-vk class="social-sharing-icon" />
 
                   <div class="social-sharing-label">
@@ -107,11 +128,7 @@
         </a-col>
 
         <a-col :md="12" :span="24">
-          <card>
-            <page-title tag="h3" size="16" class="mb-15">
-              {{ $t('page_job_invite.invite_a_few') }}
-            </page-title>
-
+          <card :card-title="$t('page_job_invite.invite_a_few')">
             <p class="text-gray-300">
               {{ $t('page_job_invite.enter_candidates_details') }}
             </p>
@@ -119,32 +136,61 @@
             <a-form @submit.prevent="handleSubmitForm">
               <a-row :gutter="{ lg: 20, sm: 10, xs: 10 }">
                 <a-col :span="24">
-                  <a-form-item has-feedback :label="data.name.value && $t('placeholders.full_name')"
-                    :validate-status="data.name.status">
-                    <a-input v-model="data.name.value" :placeholder="$t('placeholders.full_name')" size="large" />
+                  <a-form-item
+                    has-feedback
+                    :label="data.name.value && $t('placeholders.full_name')"
+                    :validate-status="data.name.status"
+                  >
+                    <a-input
+                      v-model="data.name.value"
+                      :placeholder="$t('placeholders.full_name')"
+                      size="large"
+                    />
                   </a-form-item>
                 </a-col>
 
                 <a-col :span="24">
-                  <a-form-item has-feedback :label="data.email.value && $t('placeholders.email')"
-                    :validate-status="data.email.status">
-                    <a-input v-model="data.email.value" type="email" :placeholder="$t('placeholders.email')"
-                      size="large" />
+                  <a-form-item
+                    has-feedback
+                    :label="data.email.value && $t('placeholders.email')"
+                    :validate-status="data.email.status"
+                  >
+                    <a-input
+                      v-model="data.email.value"
+                      type="email"
+                      :placeholder="$t('placeholders.email')"
+                      size="large"
+                    />
                   </a-form-item>
                 </a-col>
 
                 <a-col :span="24">
-                  <a-form-item has-feedback :label="data.phone.value && $t('placeholders.phone')"
-                    :validate-status="data.phone.status">
-                    <a-input v-model="data.phone.value" type="tel" :placeholder="$t('placeholders.phone')" size="large" />
+                  <a-form-item
+                    has-feedback
+                    :label="data.phone.value && $t('placeholders.phone')"
+                    :validate-status="data.phone.status"
+                  >
+                    <a-input
+                      v-model="data.phone.value"
+                      type="tel"
+                      :placeholder="$t('placeholders.phone')"
+                      size="large"
+                    />
                   </a-form-item>
                 </a-col>
 
                 <a-col :span="24">
-                  <a-form-item has-feedback :label="data.language.value && $t('language')"
-                    :validate-status="data.language.status">
-                    <a-select :placeholder="$t('language')" :defaultActiveFirstOption="false" :value="data.language.value"
-                      @change="onChangeLanguage">
+                  <a-form-item
+                    has-feedback
+                    :label="data.language.value && $t('language')"
+                    :validate-status="data.language.status"
+                  >
+                    <a-select
+                      :placeholder="$t('language')"
+                      :defaultActiveFirstOption="false"
+                      :value="data.language.value"
+                      @change="onChangeLanguage"
+                    >
                       <div slot="suffixIcon">
                         <icon-arrow-down />
                       </div>
@@ -160,7 +206,11 @@
                         </div>
                       </template>
 
-                      <a-select-option v-for="(language, index) in languages" :key="index" :value="language.name">
+                      <a-select-option
+                        v-for="(language, index) in languages"
+                        :key="index"
+                        :value="language.name"
+                      >
                         {{ language.title }}
                       </a-select-option>
                     </a-select>
@@ -169,7 +219,10 @@
 
                 <a-col :span="24">
                   <a-form-item>
-                    <a-checkbox :checked="data.isSendInvite" @change="(e) => (data.isSendInvite = e.target.checked)">
+                    <a-checkbox
+                      :checked="data.isSendInvite"
+                      @change="(e) => (data.isSendInvite = e.target.checked)"
+                    >
                       {{ $t('Send invite') }}
                     </a-checkbox>
                   </a-form-item>
@@ -177,7 +230,12 @@
 
                 <a-col :span="24">
                   <a-form-item>
-                    <app-button htmlType="submit" type="primary" size="large" :loading="loadInvite">
+                    <app-button
+                      htmlType="submit"
+                      type="primary"
+                      size="large"
+                      :loading="loadInvite"
+                    >
                       {{ $t('invite') }}
                     </app-button>
                   </a-form-item>
@@ -186,22 +244,67 @@
             </a-form>
           </card>
         </a-col>
+        <a-col :md="12" :span="24">
+          <card :card-title="$t('page_job_invite.invite_qr_code')">
+            <!-- QR Code Display -->
+            <div class="qr-container">
+              <qrcode-vue
+                :value="`${BASE_PATH_APP_URL}i/${jobInfo.hashLink}`"
+                :size="170"
+                level="H"
+                ref="qrCode"
+              />
+              <app-button
+                type="link"
+                size="large"
+                class="mt-30"
+                @click="downloadQR"
+              >
+                {{ $t('Download QR') }}
+                <icon-download class="download-icon" />
+              </app-button>
+            </div>
+
+            <p class="text-gray-300">
+              {{ $t('page_job_invite.copy_and_share') }}
+              <br />
+              {{ `(${$t('page_job_invite.recommended_option')})` }}
+            </p>
+
+            <div class="d-flex">
+              <a-input
+                ref="inviteLink"
+                class="mr-10 copy"
+                size="large"
+                readonly
+                :value="`${BASE_PATH_APP_URL}i/${jobInfo.hashLink}`"
+                @click="handleCopy"
+              />
+
+              <app-button type="primary" size="large" @click="handleCopy">
+                {{ $t('copy') }}
+              </app-button>
+            </div>
+          </card>
+        </a-col>
 
         <a-col :md="12" :span="24">
-          <card>
-            <page-title tag="h3" size="16" class="mb-15">
-              {{ $t('page_job_invite.invite_many') }}
-            </page-title>
-
+          <card :card-title="$t('page_job_invite.invite_many')">
             <p class="text-gray-300">
               {{ $t('page_job_invite.upload_a_spreadsheet_of_candidates') }}
             </p>
 
             <a-form>
-              <a-form-item has-feedback :label="csvInviteData.language.value && $t('language')"
-                :validate-status="csvInviteData.language.status">
-                <a-select :placeholder="$t('language')" :value="csvInviteData.language.value"
-                  @change="onChangeCsvLanguage">
+              <a-form-item
+                has-feedback
+                :label="csvInviteData.language.value && $t('language')"
+                :validate-status="csvInviteData.language.status"
+              >
+                <a-select
+                  :placeholder="$t('language')"
+                  :value="csvInviteData.language.value"
+                  @change="onChangeCsvLanguage"
+                >
                   <div slot="suffixIcon">
                     <icon-arrow-down />
                   </div>
@@ -215,7 +318,11 @@
                     </div>
                   </template>
 
-                  <a-select-option v-for="(language, index) in languages" :key="index" :value="language.name">
+                  <a-select-option
+                    v-for="(language, index) in languages"
+                    :key="index"
+                    :value="language.name"
+                  >
                     {{ language.title }}
                   </a-select-option>
                 </a-select>
@@ -223,7 +330,13 @@
             </a-form>
 
             <div class="d-flex flex-xs-column">
-              <app-button type="primary" size="large" class="mr-tablet-10 mb-sm-15" block @click="getCsv">
+              <app-button
+                type="primary"
+                size="large"
+                class="mr-tablet-10 mb-sm-15"
+                block
+                @click="getCsv"
+              >
                 {{ $t('browse') }}
               </app-button>
 
@@ -239,11 +352,33 @@
                 {{ csvInviteData.file.name }}
               </page-title>
 
-              <app-button type="primary" size="large" block class="mr-tablet-10 mb-sm-15" :loading="csvUpload"
-                @click="uploadCsv">
+              <app-button
+                type="primary"
+                size="large"
+                block
+                class="mr-tablet-10 mb-sm-15"
+                :loading="csvUpload"
+                @click="uploadCsv"
+              >
                 {{ $t('send') }}
               </app-button>
             </div>
+          </card>
+        </a-col>
+
+        <a-col :md="12" :span="24">
+          <card :card-title="$t('page_job_invite.install_chat_widget')">
+            <p class="text-gray">
+              {{ $t('page_job_invite.this_interview') }}
+              <a-switch size="small" v-model="showAllPositions" />
+              <span class="text-strong">{{
+                $t('page_job_invite.all_positions')
+              }}</span>
+              <br />
+              <span class="description">{{
+                $t('page_job_invite.copy_paste_to_your_website')
+              }}</span>
+            </p>
           </card>
         </a-col>
       </a-row>
@@ -256,6 +391,7 @@ import { mapActions } from 'vuex';
 import { BASE_PATH_APP_URL, BASE_PATH_URL } from '../js/const/index.js';
 import apiRequest from '../js/helpers/apiRequest.js';
 import parseJobs from '../js/helpers/parseJobs.js';
+import QrcodeVue from 'qrcode.vue';
 
 import AppPage from '../components/AppPage.vue';
 import PageTitle from '../components/PageTitle.vue';
@@ -268,6 +404,7 @@ import IconLinkedin from '../components/icons/Linkedin.vue';
 import IconTwitter from '../components/icons/Twitter2.vue';
 import IconVk from '../components/icons/Vk.vue';
 import IconMore from '../components/icons/More.vue';
+import IconDownload from '../components/icons/Download.vue';
 
 export default {
   name: 'JobInvite',
@@ -282,7 +419,9 @@ export default {
     IconLinkedin,
     IconTwitter,
     IconVk,
-    IconMore
+    IconMore,
+    QrcodeVue,
+    IconDownload
   },
 
   data() {
@@ -291,6 +430,7 @@ export default {
       pageLoading: false,
       csvUpload: false,
       loadInvite: false,
+      showAllPositions: true,
       // languages: [
       //   {
       //     name: 'en',
@@ -622,6 +762,14 @@ export default {
       }
     },
 
+    downloadQR() {
+      const canvas = this.$refs.qrCode.$el.querySelector('canvas');
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'invite_qr_code.png';
+      link.click();
+    },
+
     ...mapActions({
       getJobs: 'jobs/getJobs'
     })
@@ -665,5 +813,22 @@ export default {
 .social-sharing-label {
   font-size: 24px;
   font-weight: 700;
+}
+
+.qr-container {
+  padding: 12px 0 34px 6px;
+  display: flex;
+}
+.download-icon {
+  margin-left: 7px;
+}
+
+.text-gray {
+  padding-top: 22px;
+  font-size: 16px;
+  .text-strong {
+    font-weight: 700;
+    color: black;
+  }
 }
 </style>

@@ -467,7 +467,12 @@
     "your_details": "Contact Details",
     "your_ideal_profile_of_candidate": "Your ideal profile of candidate",
     "your_invited_to_work_together_in": "Your invited to work together in:",
-    "your_name": "Your name"
+    "your_name": "Your name",
+    "usage": "Usage",
+    "update_payment_method":"Update payment method",
+    "invoices": "Invoices",
+    "update_payment_method_description": "To update payment method please login to the billing dashboard:",
+    "invoices_description": "Payment history and invoices available in the billing dashboard:"
   },
   "de": {
     "Add candidate": "Kandidat hinzufügen",

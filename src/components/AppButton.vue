@@ -62,6 +62,22 @@ export default {
     }
   }
 
+  &.ant-btn-primary-dark {
+    background-color: #ffab42;
+    border-color: #ffab42;
+    color: #fff;
+
+    &:hover {
+      background-color: #4f4967;
+      border-color: #4f4967;
+      color: #fff;
+    }
+    &:disabled {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+  }
+
   // &.blue-gradient {
   //   border: 0;
   //   background-image: $blue-gradient-200;

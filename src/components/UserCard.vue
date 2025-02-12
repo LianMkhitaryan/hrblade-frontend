@@ -1,47 +1,78 @@
 <template>
-  <card big-padding class="user-card">
-    <div class="user-card-avatar">
-      <a-avatar shape="square" :size="162" :src="info.avatar">
-        <icon-user-default-avatar></icon-user-default-avatar>
-      </a-avatar>
-    </div>
+  <card
+    big-padding
+    class="user-card"
+    :card-title="'Account'"
+    :button="logout"
+    :buttonName="$t('sidebar.links.log_out')"
+  >
+    <template #button-icon>
+      <icon-logout class="button-icon" />
+    </template>
+    <div class="card-body">
+      <div class="user-card-info">
+        <page-title size="18-normal">User</page-title>
+        <div class="user-card-info-avatar">
+          <a-avatar shape="square" :size="82" :src="info.avatar">
+            <icon-user-default-avatar></icon-user-default-avatar>
+          </a-avatar>
+        </div>
+        <list class="user-card-list mb-20 mt-15">
+          <list-item-info :value="info.name" class="details" />
+          <list-item-info
+            class="details"
+            :label="`${$t('email')}:`"
+            :value="info.email"
+          />
+          <list-item-info
+            :label="`${$t('phone')}:`"
+            :value="info.phone || '-'"
+            class="details"
+          />
+        </list>
 
-    <div class="user-card-info">
-      <list class="user-card-list mb-20">
-        <list-item-info :label="`${$t('email')}:`" :value="info.email" />
-        <list-item-info :label="`${$t('phone')}:`" :value="info.phone || '-'" />
-      </list>
+        <div>
+          <router-link to="/profile/edit" class="mr-10 mt-10">
+            <app-button type="link" class="edit-button">
+              {{ $t('page_edit_profile.title') }}
+              <icon-edit />
+            </app-button>
+          </router-link>
 
-      <div>
-        <router-link to="/profile/edit" class="mr-10 mt-10">
-          <app-button size="large">
-            {{ $t('page_edit_profile.title') }}
-          </app-button>
-        </router-link>
-
-        <a-popconfirm
-          :title="`${$t('are_you_sure')}?`"
-          class="user-card-change-password"
-          @confirm="handleChangePassword"
-        >
-          <app-button size="large" class="mr-10 mt-10">
-            {{ $t('change_password') }}
-          </app-button>
-        </a-popconfirm>
-
-        <a-popconfirm
-          :title="`${$t('notify.generate_new_token_notify')}`"
-          class="user-card-change-password"
-          @confirm="handleGenerateToken"
-        >
-          <app-button
-            size="large"
-            class="mt-10"
-            :loading="tokenGenerationLoading"
+          <a-popconfirm
+            :title="`${$t('are_you_sure')}?`"
+            class="user-card-change-password"
+            @confirm="handleChangePassword"
           >
-            {{ $t('get_api_token') }}
-          </app-button>
-        </a-popconfirm>
+            <app-button type="link" class="edit-button mr-10 mt-10">
+              {{ $t('change_password') }}
+              <icon-edit />
+            </app-button>
+          </a-popconfirm>
+
+          <!-- <a-popconfirm
+            :title="`${$t('notify.generate_new_token_notify')}`"
+            class="user-card-change-password"
+            @confirm="handleGenerateToken"
+          >
+            <app-button
+              size="large"
+              class="mt-10"
+              :loading="tokenGenerationLoading"
+            >
+              {{ $t('get_api_token') }}
+            </app-button>
+          </a-popconfirm> -->
+        </div>
+      </div>
+      <div class="user-card-plan">
+        <page-title size="18-normal">Plan</page-title>
+        <page-title size="32">{{ plan.name }}</page-title>
+        <app-button type="primary">
+          <router-link to="/profile/plan">
+            {{ $t('change_plan') }}
+          </router-link>
+        </app-button>
       </div>
     </div>
 
@@ -115,6 +146,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import apiRequest from '../js/helpers/apiRequest.js';
 import removeTokenFromLocalStorage from '../js/helpers/removeTokenFromLocalStorage.js';
 
@@ -123,6 +155,8 @@ import PageTitle from './PageTitle.vue';
 import List from './List.vue';
 import ListItemInfo from './ListItemInfo.vue';
 import AppButton from './AppButton.vue';
+import IconLogout from './icons/Logout.vue';
+import IconEdit from './icons/Edit.vue';
 
 import IconUserDefaultAvatar from './icons/UserDefaultAvatar.vue';
 
@@ -135,7 +169,9 @@ export default {
     List,
     ListItemInfo,
     AppButton,
-    IconUserDefaultAvatar
+    IconUserDefaultAvatar,
+    IconLogout,
+    IconEdit
   },
 
   props: {
@@ -161,7 +197,10 @@ export default {
   computed: {
     userEmail() {
       return this.$store.state.user.info.email;
-    }
+    },
+    ...mapState({
+      plan: ({ user }) => user.plan
+    })
   },
 
   methods: {
@@ -195,6 +234,11 @@ export default {
     onCloseTokenModal() {
       this.token = '';
       this.tokenModalVisible = false;
+    },
+
+    logout() {
+      removeTokenFromLocalStorage();
+      this.$router.go('/login');
     },
 
     handleCopyApiKey() {
@@ -285,7 +329,7 @@ export default {
 <style lang="scss">
 .user-card {
   .card-inner {
-    flex-direction: row;
+    // flex-direction: row;
 
     @media (max-width: $sm) {
       flex-direction: column;
@@ -293,9 +337,12 @@ export default {
   }
 }
 
-.user-card-avatar {
-  margin-right: 20px;
+.card-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
 
+.user-card-info-avatar {
   .ant-avatar {
     @media (max-width: $sm) {
       width: 95px !important;
@@ -317,15 +364,56 @@ export default {
   }
 }
 
+.user-card-plan {
+  padding-top: 20px;
+}
+
 // .user-card-list {
 // @media (max-width: $sm) {
 //   margin-bottom: 30px;
 // }
 // }
 
+.list-item-info {
+  &-label,
+  &-value {
+    font-size: 18px;
+    font-weight: 400;
+  }
+  &-label {
+    color: black;
+  }
+  &-value:first-child {
+    font-weight: 600;
+  }
+  &:nth-child(2) &-value {
+    font-weight: 700;
+  }
+}
+
 .user-card-change-password {
   @media (max-width: $sm) {
     margin-top: 10px;
   }
+}
+</style>
+
+<style lang="scss" scoped>
+.list-item-info {
+  display: flex;
+  justify-content: start !important;
+  &:not(:last-of-type) {
+    margin-bottom: 8px;
+  }
+}
+.button-icon {
+  margin-left: 14px;
+}
+.ant-btn-link {
+  padding: 0;
+}
+.edit-button {
+  font-size: 18px;
+  font-weight: 700;
 }
 </style>

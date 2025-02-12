@@ -153,37 +153,48 @@ export default {
           SET_PLANS,
           plans
             .filter((plan) => !!plan.active)
-            .map(({ id, active, name, price, responses_limit, prices }) => ({
-              // plan_uid,
-              // description,
-              // bonuses,
-              // stripe_name,
-              // stripe_price
-              id,
-              active: !!active,
-              name,
-              price,
-              responsesLimit: responses_limit,
-              prices: prices
-                .map(
-                  ({ price, stripe_price_id, currency, symbol, yearly }) => ({
-                    price,
-                    stripePriceId: stripe_price_id,
-                    name,
-                    currency,
-                    symbol,
-                    isYearly: !!yearly
-                  })
-                )
-                .sort((a, b) =>
-                  a.isYearly === b.isYearly ? 0 : b.isYearly ? -1 : 1
-                )
-              // planUid: plan_uid,
-              // description,
-              // bonuses,
-              // stripeName: stripe_name,
-              // stripePrice: stripe_price
-            }))
+            .map(
+              ({
+                id,
+                active,
+                name,
+                description,
+                price,
+                responses_limit,
+                prices
+              }) => ({
+                // plan_uid,
+                description,
+                // bonuses,
+                // stripe_name,
+                // stripe_price
+                id,
+                active: !!active,
+                name,
+                price,
+                responsesLimit: responses_limit,
+                prices: prices
+                  .map(
+                    ({ price, stripe_price_id, currency, symbol, yearly }) => ({
+                      price,
+                      stripePriceId: stripe_price_id,
+                      name,
+                      description,
+                      currency,
+                      symbol,
+                      isYearly: !!yearly
+                    })
+                  )
+                  .sort((a, b) =>
+                    a.isYearly === b.isYearly ? 0 : b.isYearly ? -1 : 1
+                  )
+                // planUid: plan_uid,
+                // description,
+                // bonuses,
+                // stripeName: stripe_name,
+                // stripePrice: stripe_price
+              })
+            )
             .sort((a, b) => a.price - b.price)
         );
       } catch (error) {

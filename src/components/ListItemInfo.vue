@@ -1,6 +1,6 @@
 <template>
   <li class="list-item-info">
-    <span class="list-item-info-label">
+    <span v-if="label" class="list-item-info-label">
       <slot name="title">{{ label }}</slot>
     </span>
 

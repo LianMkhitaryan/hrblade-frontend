@@ -277,10 +277,15 @@
 		"invite_a_few": "Send invite (E-mail / SMS)",
 		"invite_link": "Invite by link",
 		"invite_many": "Bulk invite",
+		"invite_qr_code": "Share a chat-bot style interview",
+		"install_chat_widget": "Install chat widget on your website",
 		"recommended_option": "Recommended",
 		"send_an_invite": "To get started, send an invite to the expected candidates",
 		"title": "Invite to interview",
-		"upload_a_spreadsheet_of_candidates": "Upload an entire list of candidates. Find these file types available: CSV or tab-delimited text files (duplicated entries will be deleted). "
+		"upload_a_spreadsheet_of_candidates": "Upload an entire list of candidates. Find these file types available: CSV or tab-delimited text files (duplicated entries will be deleted). ",
+		"this_interview": "This interview",
+		"all_positions": "All positions in the company",
+		"copy_paste_to_your_website": "Copy and paste to your website before </body> tag"
 	  },
 	  "page_jobs": {
 		"list_of_candidates": "List of candidates",
@@ -469,7 +474,14 @@
 	  "your_invited_to_work_together_in": "Your invited to work together in:",
 	  "your_name": "Your name",
 	  "question_lang":"Answer language",
-	  "Billing dashboard":"Billing dashboard"
+	  "Billing dashboard":"Billing dashboard",
+	  "usage": "Usage",
+	  "update_payment_method":"Update payment method",
+	  "invoices": "Invoices",
+	  "update_payment_method_description": "To update payment method please login to the billing dashboard:",
+	  "invoices_description": "Payment history and invoices available in the billing dashboard:",
+	  "change_plan": "Change a plan",
+	  "pick_plan": "Pick a plan"
 	},
 	"de": {
 	  "Add candidate": "Kandidat hinzufügen",

@@ -7,33 +7,38 @@
         </a-breadcrumb-item>
       </a-breadcrumb>
 
-      <a-row :gutter="[
-        { lg: 20, xs: 10 },
-        { lg: 20, xs: 10 }
-      ]">
-        <a-col :md="{ span: 12 }" :xs="{ span: 24 }">
-          <page-title>
-            {{ user.name }}
-          </page-title>
-        </a-col>
-
-        <a-col :md="{ span: 12 }" :xs="{ span: 24 }" class="text-right-md">
-          <app-button type="primary" @click="logout">
-            {{ $t('sidebar.links.log_out') }}
-          </app-button>
-        </a-col>
-      </a-row>
+      <app-profile-nav></app-profile-nav>
     </template>
 
-    <a-row type="flex" :gutter="[
-      { lg: 20, xs: 10 },
-      { lg: 20, xs: 10 }
-    ]">
-      <a-col v-if="user.id" :span="24" :dir="this.$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
+    <a-row
+      type="flex"
+      :gutter="[
+        { lg: 20, xs: 10 },
+        { lg: 20, xs: 10 }
+      ]"
+    >
+      <a-col
+        v-if="$route.path === '/profile' && user.id"
+        :span="24"
+        :dir="this.$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
+      >
         <user-card :info="user" />
       </a-col>
 
-      <a-col id="billing" :span="24" :dir="this.$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
+      <a-col
+        v-if="$route.path === '/profile/usage'"
+        :span="24"
+        :dir="this.$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
+      >
+        <usage />
+      </a-col>
+
+      <a-col
+        v-if="$route.path === '/profile/plan'"
+        id="billing"
+        :span="24"
+        :dir="this.$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
+      >
         <billing ref="billing" @on-show-invoice="onShowInvoice" />
       </a-col>
 
@@ -46,22 +51,36 @@
           <a-form class="invoice-form">
             <a-row :gutter="20">
               <a-col :md="{ span: 14 }" :xs="{ span: 24 }">
-                <a-form-item has-feedback :label="
-                  invoiceData.description.value &&
-                  $t('placeholders.legal_entity_details')
-                " :validate-status="invoiceData.description.status">
-                  <a-input v-model="invoiceData.description.value" type="textarea"
-                    :placeholder="$t('placeholders.legal_entity_details')" />
+                <a-form-item
+                  has-feedback
+                  :label="
+                    invoiceData.description.value &&
+                      $t('placeholders.legal_entity_details')
+                  "
+                  :validate-status="invoiceData.description.status"
+                >
+                  <a-input
+                    v-model="invoiceData.description.value"
+                    type="textarea"
+                    :placeholder="$t('placeholders.legal_entity_details')"
+                  />
                 </a-form-item>
               </a-col>
             </a-row>
 
             <a-row :gutter="20" class="mt-10">
               <a-col :md="{ span: 14 }" :xs="{ span: 16 }">
-                <a-form-item has-feedback :label="invoiceData.plan.value && $t('placeholders.tariff')"
-                  :validate-status="invoiceData.plan.status">
-                  <a-select :placeholder="$t('placeholders.tariff')" :defaultActiveFirstOption="false"
-                    :value="invoiceData.plan.value" @change="handleChangeInvoiceTariff">
+                <a-form-item
+                  has-feedback
+                  :label="invoiceData.plan.value && $t('placeholders.tariff')"
+                  :validate-status="invoiceData.plan.status"
+                >
+                  <a-select
+                    :placeholder="$t('placeholders.tariff')"
+                    :defaultActiveFirstOption="false"
+                    :value="invoiceData.plan.value"
+                    @change="handleChangeInvoiceTariff"
+                  >
                     <div slot="suffixIcon">
                       <icon-arrow-down></icon-arrow-down>
                     </div>
@@ -77,7 +96,11 @@
                       </div>
                     </template>
 
-                    <a-select-option v-for="(tariff, index) in invoiceTariffs" :key="index" :value="tariff">
+                    <a-select-option
+                      v-for="(tariff, index) in invoiceTariffs"
+                      :key="index"
+                      :value="tariff"
+                    >
                       {{ tariff }}
                     </a-select-option>
                   </a-select>
@@ -85,11 +108,19 @@
               </a-col>
 
               <a-col :md="{ span: 6 }" :xs="{ span: 8 }">
-                <a-form-item has-feedback :label="
-                  invoiceData.currency.value && $t('placeholders.currency')
-                " :validate-status="invoiceData.currency.status">
-                  <a-select :placeholder="$t('placeholders.currency')" :defaultActiveFirstOption="false"
-                    :value="invoiceData.currency.value" @change="handleChangeInvoiceCurrency">
+                <a-form-item
+                  has-feedback
+                  :label="
+                    invoiceData.currency.value && $t('placeholders.currency')
+                  "
+                  :validate-status="invoiceData.currency.status"
+                >
+                  <a-select
+                    :placeholder="$t('placeholders.currency')"
+                    :defaultActiveFirstOption="false"
+                    :value="invoiceData.currency.value"
+                    @change="handleChangeInvoiceCurrency"
+                  >
                     <div slot="suffixIcon">
                       <icon-arrow-down></icon-arrow-down>
                     </div>
@@ -105,7 +136,11 @@
                       </div>
                     </template>
 
-                    <a-select-option v-for="(value, index) in currency" :key="index" :value="value">
+                    <a-select-option
+                      v-for="(value, index) in currency"
+                      :key="index"
+                      :value="value"
+                    >
                       {{ value }}
                     </a-select-option>
                   </a-select>
@@ -114,7 +149,11 @@
 
               <a-col :span="24" class="mt-10">
                 <div class="invoice-form-action">
-                  <app-button size="large" :loading="isLoadingSendInvoice" @click="handleSendInvoice">
+                  <app-button
+                    size="large"
+                    :loading="isLoadingSendInvoice"
+                    @click="handleSendInvoice"
+                  >
                     {{ $t('send_invoice') }}
                   </app-button>
 
@@ -143,6 +182,8 @@ import UserCard from '../components/UserCard.vue';
 import Billing from '../components/Billing';
 import Card from '../components/Card.vue';
 import AppButton from '../components/AppButton.vue';
+import AppProfileNav from '../components/AppProfileNav.vue';
+import Usage from '../components/Usage.vue';
 
 import IconArrowDown from '../components/icons/ArrowDown.vue';
 import IconMore from '../components/icons/More.vue';
@@ -157,8 +198,10 @@ export default {
     UserCard,
     Card,
     AppButton,
+    AppProfileNav,
     IconArrowDown,
-    IconMore
+    IconMore,
+    Usage
   },
 
   data() {

@@ -102,7 +102,7 @@ export default {
 <style lang="scss">
 .app-header {
   position: relative;
-  overflow: hidden;
+  // overflow: hidden;
   background-color: $white;
   box-shadow: 0 0 10px 5px rgba(71, 71, 71, 0.1);
 

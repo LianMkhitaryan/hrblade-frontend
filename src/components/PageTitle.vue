@@ -60,6 +60,16 @@ export default {
   }
 }
 
+.page-title-32 {
+  margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: 600;
+
+  @media (max-width: $sm) {
+    font-size: 28px;
+  }
+}
+
 .page-title-20 {
   margin-bottom: 20px;
   font-size: 20px;
@@ -74,6 +84,13 @@ export default {
   margin-bottom: 15px;
   font-size: 18px;
   font-weight: 600;
+}
+
+.page-title-18-normal {
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.3;
 }
 
 .page-title-16 {
