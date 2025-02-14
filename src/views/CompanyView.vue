@@ -136,7 +136,7 @@
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <app-button type="primary" size="large">
+                        <app-button :style="buttonStyles" size="large">
                           {{ $t('See position') }}
                         </app-button>
                       </a>
@@ -239,6 +239,17 @@ export default {
             return job;
           }
         }, location);
+    },
+    buttonStyles() {
+      const bgColor = this.company?.buttons_color || '#fda94c';
+      return {
+        backgroundColor: bgColor,
+        borderColor: bgColor,
+        color:
+          parseInt(bgColor.replace('#', ''), 16) > 0xffffff / 2
+            ? '#000'
+            : '#fff'
+      };
     }
   },
 
