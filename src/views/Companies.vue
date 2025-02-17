@@ -1,10 +1,12 @@
 <template>
   <app-page class="page-companies" :loading="pageLoading || appLoading">
     <template slot="header">
-      <a-row :gutter="[
+      <a-row
+        :gutter="[
           { lg: 20, xs: 10 },
           { lg: 20, xs: 10 }
-        ]">
+        ]"
+      >
         <a-col :md="{ span: 12 }" :xs="{ span: 24 }">
           <page-title class="mb-10">
             {{ $t('page_companies.title') }}
@@ -15,7 +17,11 @@
               {{ `${$t('companies')}: ${companies.length}/${companiesLimit}` }}
             </div>
 
-            <router-link v-if="companies.length >= companiesLimit" to="/profile" class="limit-info-link">
+            <router-link
+              v-if="companies.length >= companiesLimit"
+              to="/profile"
+              class="limit-info-link"
+            >
               <b>
                 {{ $t('upgrade') }}
               </b>
@@ -34,20 +40,38 @@
     </template>
 
     <card class="filter-card filter-card-normal mb-10">
-      <a-row type="flex" align="bottom" :gutter="[
-        { xl: 10, lg: 10, md: 10, sm: 10, xs: 10 },
-        { xl: 0, lg: 10, md: 10, sm: 10, xs: 10 }
-      ]">
+      <a-row
+        type="flex"
+        align="bottom"
+        :gutter="[
+          { xl: 10, lg: 10, md: 10, sm: 10, xs: 10 },
+          { xl: 0, lg: 10, md: 10, sm: 10, xs: 10 }
+        ]"
+      >
         <a-col :xl="{ span: 6 }" :xs="{ span: 24 }">
-          <a-input v-model="filter.search" size="small" :placeholder="$t('placeholders.search_by_name')">
+          <a-input
+            v-model="filter.search"
+            size="small"
+            :placeholder="$t('placeholders.search_by_name')"
+          >
             <icon-search slot="prefix" class="ant-input-prefix-icon" />
           </a-input>
         </a-col>
 
-        <a-col class="page-support-filters" :xl="{ span: 18 }" :xs="{ span: 24 }">
-          <a-select mode="multiple" size="small" :placeholder="$t('industry')"
-            :class="{ 'hide-label': filter.industry.length }" :value="filter.industry" data-label="*"
-            @change="onChangeFilterIndustry">
+        <a-col
+          class="page-support-filters"
+          :xl="{ span: 18 }"
+          :xs="{ span: 24 }"
+        >
+          <a-select
+            mode="multiple"
+            size="small"
+            :placeholder="$t('industry')"
+            :class="{ 'hide-label': filter.industry.length }"
+            :value="filter.industry"
+            data-label="*"
+            @change="onChangeFilterIndustry"
+          >
             <template slot="notFoundContent">
               <div class="ant-empty ant-empty-normal ant-empty-small">
                 <div class="ant-empty-image">
@@ -58,14 +82,24 @@
               </div>
             </template>
 
-            <a-select-option v-for="industry in industries" :key="industry.id" :value="industry.id">
+            <a-select-option
+              v-for="industry in industries"
+              :key="industry.id"
+              :value="industry.id"
+            >
               {{ industry.name }}
             </a-select-option>
           </a-select>
 
-          <a-select size="small" mode="tags" :placeholder="$t('placeholders.date_sort')"
-            :class="['ml-10', { 'hide-label': filter.date.length }]" :value="filter.date" data-label="*"
-            @change="onChangeFilterDate">
+          <a-select
+            size="small"
+            mode="tags"
+            :placeholder="$t('placeholders.date_sort')"
+            :class="['ml-10', { 'hide-label': filter.date.length }]"
+            :value="filter.date"
+            data-label="*"
+            @change="onChangeFilterDate"
+          >
             <template slot="notFoundContent">
               <div class="ant-empty ant-empty-normal ant-empty-small">
                 <div class="ant-empty-image">
@@ -92,51 +126,64 @@
       </a-row>
     </card>
 
-    <a-row :gutter="[
-      { lg: 20, xs: 10 },
-      { sm: 10, xs: 10 }
-    ]">
-      <a-col v-for="(company, index) in filtredCompanies" :key="company.id" :span="24">
+    <a-row
+      :gutter="[
+        { lg: 20, xs: 10 },
+        { sm: 10, xs: 10 }
+      ]"
+    >
+      <a-col
+        v-for="(company, index) in filtredCompanies"
+        :key="company.id"
+        :span="24"
+      >
         <a-spin :spinning="cardLoadingId === company.id">
-          <a-icon slot="indicator" type="loading" style="font-size: 24px" spin />
+          <a-icon
+            slot="indicator"
+            type="loading"
+            style="font-size: 24px"
+            spin
+          />
 
-          <router-link :to="`/companies/view/${company.id}`" :class="[
+          <router-link
+            :to="`/companies/view/${company.id}`"
+            :class="[
               'company-card',
               { 'company-card-disabled': company.disabled }
-            ]">
+            ]"
+          >
             <card class="page-companies-card">
               <a-avatar shape="square" :size="90" :src="company.logo">
                 <icon-user-default-avatar />
               </a-avatar>
 
               <div class="page-companies-card-info">
-                <span class="text-black font-weight-600">
-                  {{ company.name }}
-                </span>
-
                 <div>
-                  <div>
-                    {{ `${$t('location')}:` }}
-                    <span class="text-black font-weight-600">
-                      {{ company.location || '-' }}
-                    </span>
-                  </div>
+                  <span class="text-black font-weight-600">
+                    {{ company.name }}
+                  </span>
 
                   <div>
-                    {{ `${$t('industry')}:` }}
-                    <span class="text-black font-weight-600">
-                      {{
-                        company.industryId && industries.length
-                        ? industries.find(
-                          (industry) => industry.id === company.industryId
-                        ).name
-                        : '-'
-                      }}
-                    </span>
-                  </div>
-                </div>
+                    <div>
+                      {{ `${$t('location')}:` }}
+                      <span class="text-black font-weight-600">
+                        {{ company.location || '-' }}
+                      </span>
+                    </div>
 
-                <div class="d-flex justify-content-between mt-auto">
+                    <div>
+                      {{ `${$t('industry')}:` }}
+                      <span class="text-black font-weight-600">
+                        {{
+                          company.industryId && industries.length
+                            ? industries.find(
+                                (industry) => industry.id === company.industryId
+                              ).name
+                            : '-'
+                        }}
+                      </span>
+                    </div>
+                  </div>
                   <span>
                     {{ `${$t('jobs')}:` }}
 
@@ -144,20 +191,63 @@
                       {{ company.jobsCount }}
                     </span>
                   </span>
+                </div>
 
+                <div class="button-container">
+                  <div>
+                    <a-input
+                      class="page-companies-card-share-input"
+                      ref="companyInviteLink"
+                      readonly
+                      :value="`${BASE_PATH_APP_URL}c/${company.shareHash}`"
+                    />
+                    <b
+                      class="mr-10"
+                      @click.stop.prevent="() => onCopyCompanyLink(index)"
+                    >
+                      <app-button type="primary">
+                        {{ $t('public_page') }}
+                      </app-button>
+                    </b>
+                  </div>
+                  <a
+                    :href="`${BASE_PATH_APP_URL}c/${company.shareHash}`"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <app-button type="primary">
+                      {{ $t('chat_widget') }}
+                    </app-button>
+                  </a>
+                </div>
+
+                <div class="action-buttons">
                   <span class="page-companies-card-actions">
-                    <router-link :to="`/companies/edit/${company.id}`" class="mr-10">
+                    <router-link
+                      :to="`/companies/edit/${company.id}`"
+                      class="mr-10"
+                    >
                       <icon-edit class="fill-warning" />
                     </router-link>
 
-                    <a-input class="page-companies-card-share-input" ref="companyInviteLink" readonly
-                      :value="`${BASE_PATH_APP_URL}c/${company.shareHash}`" />
+                    <!-- <a-input
+                      class="page-companies-card-share-input"
+                      ref="companyInviteLink"
+                      readonly
+                      :value="`${BASE_PATH_APP_URL}c/${company.shareHash}`"
+                    />
 
-                    <b class="mr-10" @click.stop.prevent="() => onCopyCompanyLink(index)">
+                    <b
+                      class="mr-10"
+                      @click.stop.prevent="() => onCopyCompanyLink(index)"
+                    >
                       <icon-share class="fill-warning" />
-                    </b>
+                    </b> -->
 
-                    <a-popconfirm :title="`${$t('are_you_sure')}?`" @confirm="handleRemoveCompany(company.id)">
+                    <a-popconfirm
+                      :title="`${$t('are_you_sure')}?`"
+                      @confirm="handleRemoveCompany(company.id)"
+                    >
                       <a href="#">
                         <icon-del class="fill-danger" />
                       </a>
@@ -187,7 +277,7 @@ import IconEdit from '../components/icons/Edit.vue';
 import IconDel from '../components/icons/Del.vue';
 import IconUserDefaultAvatar from '../components/icons/UserDefaultAvatar.vue';
 import IconMore from '../components/icons/More.vue';
-import IconShare from '../components/icons/Share.vue';
+// import IconShare from '../components/icons/Share.vue';
 
 export default {
   name: 'Companies',
@@ -201,8 +291,8 @@ export default {
     IconEdit,
     IconDel,
     IconUserDefaultAvatar,
-    IconMore,
-    IconShare
+    IconMore
+    // IconShare
   },
 
   data() {
@@ -242,7 +332,7 @@ export default {
 
           return name.indexOf(searchText) >= 0 ? company : false;
         })
-        .filter(function (company) {
+        .filter(function(company) {
           if (industry.length) {
             return this.indexOf(company.industryId) >= 0;
           } else {
@@ -354,8 +444,9 @@ export default {
 
 .page-companies-card-info {
   margin-left: 10px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  align-items: end;
   width: 100%;
 }
 
@@ -431,5 +522,18 @@ export default {
   left: 0;
   opacity: 0;
   z-index: -10;
+}
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  .app-button.ant-btn {
+    height: 45px;
+    padding: 0 40px;
+  }
+}
+.action-buttons {
+  justify-self: end;
 }
 </style>

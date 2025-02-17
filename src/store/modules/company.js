@@ -40,6 +40,7 @@ export default {
                 location,
                 logo,
                 name,
+                description,
                 website,
                 jobs_count,
                 bg_image,
@@ -56,6 +57,7 @@ export default {
                 location,
                 logo,
                 name,
+                description,
                 website,
                 jobsCount: jobs_count,
                 style: {

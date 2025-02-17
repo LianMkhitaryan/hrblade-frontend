@@ -316,7 +316,6 @@ export default {
     },
 
     insertYoutubeVideo() {
-      console.log('aaaa');
       const url = prompt('Введите ссылку на YouTube-видео:');
       if (url) {
         this.editor.commands.setYoutubeVideo(url);
@@ -324,9 +323,9 @@ export default {
     },
 
     insertImage() {
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = "image/*";
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
       input.onchange = (event) => {
         const file = event.target.files[0];
         if (file) {

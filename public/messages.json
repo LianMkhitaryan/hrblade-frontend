@@ -481,7 +481,9 @@
 	  "update_payment_method_description": "To update payment method please login to the billing dashboard:",
 	  "invoices_description": "Payment history and invoices available in the billing dashboard:",
 	  "change_plan": "Change a plan",
-	  "pick_plan": "Pick a plan"
+	  "pick_plan": "Pick a plan",
+	  "public_page": "Public Page",
+	  "chat_widget":"Chat Widget"
 	},
 	"de": {
 	  "Add candidate": "Kandidat hinzufügen",

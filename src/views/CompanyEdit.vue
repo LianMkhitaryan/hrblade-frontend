@@ -248,6 +248,19 @@
             </a-form-item>
           </a-col>
         </a-row>
+        <a-row>
+          <a-col>
+            <page-title tag="h3" size="16">
+              {{ `${$t('description')}:` }}
+            </page-title>
+            <a-form-item class="ant-form-item-children-block">
+              <text-editor
+                :value="data.description || ''"
+                @update="onChangeDescription"
+              />
+            </a-form-item>
+          </a-col>
+        </a-row>
 
         <a-form-item class="mt-40">
           <app-button
@@ -301,6 +314,7 @@ import MessagesTemplateList from '../components/MessagesTemplateList.vue';
 import IconArrowDown from '../components/icons/ArrowDown.vue';
 import IconMore from '../components/icons/More.vue';
 import IconDel from '../components/icons/Del.vue';
+import TextEditor from '../components/TextEditor.vue';
 
 import 'vue-swatches/dist/vue-swatches.css';
 
@@ -317,7 +331,8 @@ export default {
     MessagesTemplateList,
     IconArrowDown,
     IconMore,
-    IconDel
+    IconDel,
+    TextEditor
   },
 
   data() {
@@ -330,6 +345,7 @@ export default {
 
       data: {
         name: '',
+        description: '',
         location: '',
         website: '',
         logo: null,
@@ -415,10 +431,15 @@ export default {
       this.data.industryId = val;
     },
 
+    onChangeDescription(val) {
+      this.data.description = val;
+    },
+
     async createCompany() {
       try {
         const {
           name,
+          description,
           location,
           website,
           logo,
@@ -431,6 +452,8 @@ export default {
 
         const body = new FormData();
         body.append('name', name);
+
+        body.append('description', description);
 
         if (location) {
           body.append('location', location);
@@ -486,6 +509,7 @@ export default {
           }
 
           this.data.name = '';
+          this.description = '';
           this.data.location = '';
           this.data.website = '';
           this.data.logo = null;
@@ -509,6 +533,7 @@ export default {
       try {
         const {
           name,
+          description,
           location,
           website,
           logo,
@@ -525,6 +550,8 @@ export default {
         const body = new FormData();
         body.append('company_id', this.companyId);
         body.append('name', name);
+
+        body.append('description', description);
 
         if (location) {
           body.append('location', location);
@@ -584,6 +611,7 @@ export default {
           }
         } else {
           this.data.name = '';
+          this.data.description = '';
           this.data.location = '';
           this.data.website = '';
           this.data.logo = null;
@@ -636,6 +664,7 @@ export default {
           const {
             data: {
               name,
+              description,
               location,
               website,
               logo,
@@ -648,6 +677,7 @@ export default {
           } = res.response;
 
           data.name = name;
+          data.description = description;
           data.location = location;
           data.website = website;
           data.logoPreview = logo;
